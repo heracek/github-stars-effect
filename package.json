@@ -2,7 +2,16 @@
   "name": "@crfx/source",
   "version": "0.0.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "start-all": "pnpm run '/^start-all:.*/'",
+    "start-all:web": "nx serve github-stars-effect",
+    "check-all": "pnpm --sequential run '/^check-all:.*/'",
+    "check-all:lint": "nx run-many --target=lint --all --fix",
+    "check-all:format": "nx format --all",
+    "check-all:tsc": "nx run-many --target=tsc --all",
+    "check-all:test": "nx run-many --target=test --all --exclude=github-stars-effect-e2e",
+    "check-all:build": "nx run-many --target=build --all --exclude=github-stars-effect,github-stars-effect-e2e"
+  },
   "dependencies": {
     "@expo/metro-config": "~0.17.3",
     "@expo/metro-runtime": "~3.1.1",
