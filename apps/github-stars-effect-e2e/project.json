@@ -1,0 +1,10 @@
+{
+  "name": "github-stars-effect-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/github-stars-effect-e2e/src",
+  "projectType": "application",
+  "tags": [],
+  "implicitDependencies": ["github-stars-effect"],
+  "// targets": "to see all targets run: nx show project github-stars-effect-e2e --web",
+  "targets": {}
+}
