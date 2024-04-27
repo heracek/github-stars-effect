@@ -2,6 +2,20 @@
 /dist
 /coverage
 /.nx/cache
+/.nx/workspace-data
 
 package.json
 pnpm-lock.yaml
+
+# Docker Compose
+/docker/local/tempo-data
+
+.tamagui
+
+# Generated Files
+/apps/github-stars-effect-server/drizzle/meta
+
+/presentation/slides.md
+/presentation/theme/example.md
+/presentation/pages/*.md
+/SNIPPETS.md

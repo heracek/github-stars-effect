@@ -1,0 +1,64 @@
+{
+  "name": "github-stars-effect-server",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/github-stars-effect-server/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/apps/github-stars-effect-server",
+        "format": ["cjs"],
+        "bundle": false,
+        "main": "apps/github-stars-effect-server/src/main.ts",
+        "tsConfig": "apps/github-stars-effect-server/tsconfig.app.json",
+        "assets": ["apps/github-stars-effect-server/src/assets"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "generateLockfile": true,
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "github-stars-effect-server:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "github-stars-effect-server:build:development"
+        },
+        "production": {
+          "buildTarget": "github-stars-effect-server:build:production"
+        }
+      }
+    },
+    "drizzle-kit": {
+      "command": "drizzle-kit --config ./apps/github-stars-effect-server/drizzle.config.ts"
+    },
+    "docker-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/github-stars-effect-server/Dockerfile . -t github-stars-effect-server"
+    }
+  }
+}

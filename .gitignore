@@ -39,6 +39,7 @@ testem.log
 Thumbs.db
 
 .nx/cache
+.nx/workspace-data
 
 # Expo
 node_modules/
@@ -55,5 +56,15 @@ npm-debug.*
 web-build/
 cache/
 
+# Local Files
+.env*.local
 
-apps/github-stars-effect-e2e/artifacts
+/apps/github-stars-effect-server/db/*
+!/apps/github-stars-effect-server/db/.gitkeep
+
+/apps/github-stars-effect-e2e/artifacts
+
+# Docker Compose
+/docker/local/tempo-data
+
+.tamagui

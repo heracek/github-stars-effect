@@ -1,0 +1,144 @@
+:root {
+  --ciklum-color-dark: #001528;
+  --ciklum-color-green: #00ffbe;
+  --ciklum-color-gray: #999999;
+  --ciklum-color-violet-light: #6450ff;
+  --ciklum-color-blue: #0020bb;
+  --ciklum-color-white: #ffffff;
+  --ciklum-color-light-blue: #50eaff;
+}
+
+html.dark {
+  #slide-content {
+    background-color: #001628;
+  }
+}
+
+html:not(.dark) {
+  #slide-content {
+    color: #001628;
+  }
+}
+
+.monaco-editor .view-overlays .current-line-exact {
+  border-top: 0 !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+.shiki-container {
+  text-align: left;
+}
+
+.slidev-layout {
+  background-color: #f3f3f3;
+
+  a,
+  a:visited,
+  a:active,
+  a:focus,
+  a:hover {
+    border-style: solid;
+    color: var(--ciklum-color-blue);
+  }
+
+  ul {
+    list-style-type: disc;
+
+    li::marker {
+      color: var(--ciklum-color-blue);
+    }
+  }
+
+  p + h2,
+  ul + h2,
+  table + h2 {
+    @apply mt-10;
+  }
+
+  h1 {
+    @apply text-4xl mb-4 -ml-[0.05em];
+    color: var(--ciklum-color-blue);
+    font-weight: 100;
+  }
+
+  h2 {
+    @apply text-2xl;
+    margin-bottom: 0.5rem;
+  }
+
+  h3 {
+    @apply text-2xl;
+    margin-bottom: 0.5rem;
+  }
+
+  h4 {
+    @apply text-xl;
+  }
+
+  h5 {
+    @apply text-base;
+  }
+
+  h6 {
+    @apply text-sm pt-1 uppercase tracking-widest font-500 -ml-[0.05em];
+  }
+
+  h6:not(.opacity-100) {
+    @apply opacity-40;
+  }
+
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--ciklum-color-dark);
+
+    font-weight: 100;
+  }
+}
+
+.default-slide h1 {
+  margin-bottom: 3rem;
+}
+
+.slidev-layout-grid {
+  @apply h-full grid;
+}
+
+.slidev-layout.cover,
+.slidev-layout.intro {
+  @apply h-full grid;
+
+  h1 {
+    @apply text-5xl leading-15;
+  }
+}
+
+.center-slide h1:first-child:last-child {
+  @apply text-5xl leading-15;
+}
+
+.d-grid {
+  display: grid;
+}
+
+.grid-cols-2 {
+  gap: 1rem;
+}
+
+.leading-line:not(:empty) {
+  position: relative;
+
+  &:before {
+    position: absolute;
+    top: 0.75rem;
+    left: -0.5rem;
+    width: 100vw;
+    height: 1px;
+    background-color: var(--ciklum-color-blue);
+    content: '';
+    transform: translateX(-100%);
+  }
+}

@@ -1,1 +1,9 @@
 node_modules
+
+# Docker Compose
+/docker/local/tempo-data
+
+.tamagui
+
+# Generated Files
+/apps/github-stars-effect-server/drizzle/meta

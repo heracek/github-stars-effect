@@ -1,4 +1,44 @@
-# Github Stars Effect
+# GitHub Stars Effect
+
+[![](./presentation/public/01.png)](./presentation/slides-export.pdf)
+
+## Requirements
+
+- Node.js version based on [./.nvmrc](./.nvmrc)
+- Node.js Corepacka enabled: `corepack enable`
+- GitHub token in `./.env.local`
+  - copy [`./.env`](./.env) to `.env.local` in root folder of the repo
+  - go to: https://github.com/settings/tokens/new?description=Github+Stars+Demo+Token&scopes=public_repo,read:user
+    and create a token
+  - put the token to `GITHUB_TOKEN` env variable in `.env.local`
+
+## Installation
+
+```bash
+pnpm install
+```
+
+## Running Server
+
+```
+pnpm start-server
+```
+
+For Swagger UI go to: http://127.0.0.1:4000/docs
+
+## Running Frontend
+
+```
+pnpm start-client
+```
+
+For web version go to: http://localhost:8081
+
+---
+
+---
+
+---
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 

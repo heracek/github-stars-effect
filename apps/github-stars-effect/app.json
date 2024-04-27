@@ -2,7 +2,9 @@
   "expo": {
     "name": "GithubStarsEffect",
     "slug": "github-stars-effect",
+    "scheme": "gh-stars",
     "version": "1.0.0",
+    "userInterfaceStyle": "automatic",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -28,6 +30,7 @@
       "bundler": "metro"
     },
     "plugins": [
+      "expo-router",
       [
         "@config-plugins/detox",
         {

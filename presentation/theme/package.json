@@ -1,0 +1,39 @@
+{
+  "name": "@slidev/theme-ciklum",
+  "version": "0.21.3",
+  "engines": {
+    "node": ">=14.0.0",
+    "slidev": ">=0.19.3"
+  },
+  "description": "Ciklum theme for Slidev",
+  "keywords": [
+    "slidev-theme",
+    "slidev"
+  ],
+  "license": "MIT",
+  "slidev": {
+    "colorSchema": "light",
+    "highlighter": "all",
+    "defaults": {
+      "fonts": {
+        "mono": "PT Mono",
+        "sans": "Public Sans",
+        "serif": "Public Sans",
+        "italic": true,
+        "weights": "100,200,600"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slidevjs/themes"
+  },
+  "funding": "https://github.com/sponsors/antfu",
+  "author": "rezi99 <tore@ciklum.com>",
+  "dependencies": {
+    "@slidev/types": "^0.22.7",
+    "codemirror-theme-vars": "^0.1.1",
+    "prism-theme-vars": "^0.2.2",
+    "theme-vitesse": "^0.1.12"
+  }
+}

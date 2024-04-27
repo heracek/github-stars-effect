@@ -14,7 +14,16 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "plugins": [
+      {
+        "name": "@effect/language-service"
+      }
+    ],
+    "paths": {
+      "@ghs/github-stars-shared-schema": [
+        "libs/github-stars/shared/schema/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

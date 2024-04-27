@@ -1,0 +1,55 @@
+{
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "cSpell.words": [
+    "Ciklum",
+    "millis",
+    "opentelemetry",
+    "proguard",
+    "rowid",
+    "tamagui",
+    "tanstack"
+  ],
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+    "*.jsx": "${capture}.js",
+    "*.ts": "${capture}.js, ${capture}.typegen.ts",
+    "*.tsx": "${capture}.ts, ${capture}.typegen.ts",
+    "package.json": ".babelrc, .browserslistrc, .dockerignore, .editorconfig, .env, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .npmrc, .nvmrc, .prettierignore, .prettierrc*, README.md, babel.config.json, cypress.json, graphql.config.*, jest.config.*, jest.preset.*, nx.json, package.json, tsconfig.base.json, tsconfig.json, workspace.json, yarn.lock, pnpm-lock.yaml, .ncurc.yaml",
+    "project.json": ".babelrc, .browserslistrc, .dockerignore, .editorconfig, .env, .eslintignore, .eslintrc.*, .gitignore, .graphqlrc.*, .nvmrc, .prettierignore, .prettierrc.*, README.md, babel.config.json, cypress.json, graphql.config.*, jest.config.*, jest.preset.*, nx.json, package.json, tsconfig.base.json, tsconfig.json, workspace.json, yarn.lock, .babelrc*, app.json, eas.json, index.js, metro.config.*, test-setup.ts, webpack.config.js, .detoxrc.json, Dockerfile",
+    "tsconfig.json": "tsconfig.*.json"
+  },
+  "peacock.affectActivityBar": false,
+  "peacock.affectSashHover": false,
+  "peacock.affectStatusBar": false,
+  "peacock.color": "#215732",
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "workbench.colorCustomizations": {
+    "commandCenter.border": "#e7e7e799",
+    "titleBar.activeBackground": "#215732",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#21573299",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  }
+}
