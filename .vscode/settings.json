@@ -10,5 +10,6 @@
   "peacock.affectActivityBar": false,
   "peacock.affectSashHover": false,
   "peacock.affectStatusBar": false,
+  "cSpell.words": [],
   "typescript.tsdk": "node_modules/typescript/lib"
 }

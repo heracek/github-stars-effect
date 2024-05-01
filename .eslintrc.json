@@ -18,13 +18,16 @@
               }
             ]
           }
-        ]
+        ],
+        "require-yield": "off"
       }
     },
     {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nx/typescript"],
-      "rules": {}
+      "rules": {
+        "require-yield": "off"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],

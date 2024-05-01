@@ -55,5 +55,8 @@ npm-debug.*
 web-build/
 cache/
 
+# Local Files
+.env*.local
+
 
 apps/github-stars-effect-e2e/artifacts
