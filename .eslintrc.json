@@ -5,6 +5,7 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "plugins": ["simple-import-sort", "import"],
       "rules": {
         "@nx/enforce-module-boundaries": [
           "error",
@@ -19,7 +20,33 @@
             ]
           }
         ],
-        "require-yield": "off"
+        "require-yield": "off",
+        "simple-import-sort/imports": [
+          "error",
+          {
+            "groups": [
+              // Side effect imports.
+              ["^\\u0000"],
+              // Node.js builtins prefixed with `node:`.
+              ["^node:"],
+              // Packages.
+              // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+              ["^react", "^effect", "^(@effect)(/.*|$)", "^@?\\w"],
+              // Internal packages.
+              ["^(@crfx/ui)", "^(@crfx)(/.*|$)"],
+              // Absolute imports and other imports such as Vue-style `@/foo`.
+              // Anything not matched in another group.
+              ["^"],
+              // Relative imports.
+              // Anything that starts with a dot.
+              ["^\\."]
+            ]
+          }
+        ],
+        "simple-import-sort/exports": "error",
+        "import/first": "error",
+        "import/newline-after-import": "error",
+        "import/no-duplicates": "error"
       }
     },
     {

@@ -1,6 +1,5 @@
 import 'dotenv-flow/config';
 
-import { serve } from '@hono/node-server';
 import {
   Config,
   Console,
@@ -11,9 +10,24 @@ import {
   Runtime,
   Secret,
 } from 'effect';
-import * as S from '@effect/schema/Schema';
+import {
+  Api,
+  ApiResponse,
+  Middlewares,
+  RouterBuilder,
+  ServerError,
+} from 'effect-http';
+import { NodeServer } from 'effect-http-node';
+import { NodeSdk } from '@effect/opentelemetry';
 import { HttpClient } from '@effect/platform';
 import { NodeRuntime } from '@effect/platform-node';
+import * as S from '@effect/schema/Schema';
+import * as sqlite from '@effect/sql-sqlite-node';
+import { serve } from '@hono/node-server';
+import {
+  BatchSpanProcessor,
+  ConsoleSpanExporter,
+} from '@opentelemetry/sdk-trace-node';
 import * as hono from 'hono';
 
 class Hono extends Context.Tag('Hono')<Hono, hono.Hono>() {}
@@ -79,90 +93,181 @@ const ResponseStar = S.Struct({
 
 const ResponseStarred = S.Array(ResponseStar);
 
-const get = <R>(
-  path: string,
-  body: (req: hono.Context) => Effect.Effect<HoneResponse, never, R>,
-) =>
-  Effect.gen(function* () {
-    const app = yield* Hono;
-    const runPromise = Runtime.runPromise(yield* Effect.runtime<R>());
+const noteApi = pipe(
+  Api.make({ title: 'GitHub Stars Effect API' }),
+  Api.addEndpoint(
+    pipe(
+      Api.post('getStars', '/stars'),
+      Api.setResponseBody(ResponseStarred),
+      // Api.setResponseStatus(201),
+      // Api.addResponse(ApiResponse.make(500, NoteError))
+    ),
+  ),
+);
 
-    app.get(path, (context) => runPromise(body(context)));
+const appError = (message: string) =>
+  Effect.mapError((e: Error) =>
+    ServerError.makeJson(500, {
+      message,
+      details: e.message,
+    }),
+  );
+
+function makeRepository(sql: sqlite.client.SqliteClient) {
+  const GetStar = sqlite.schema.single({
+    Request: S.Number,
+    Result: ResponseStar,
+    execute: (id) => sql`SELECT * FROM starred_repo WHERE id = ${id}`,
   });
 
-const IndexRouteLive = Layer.effectDiscard(
-  Effect.gen(function* () {
-    yield* get('/', (c) =>
+  return { GetStar };
+}
+
+const app = Effect.gen(function* () {
+  const sql = yield* sqlite.client.SqliteClient;
+  yield* sql`CREATE TABLE IF NOT EXISTS starred_repo (
+    id INTEGER PRIMARY KEY,
+    starred_at TEXT,
+    name: TEXT,
+    full_name: TEXT UNIQUE,
+    url: TEXT,
+    description: TEXT,
+    owner_id: INTEGER,
+    created_at: TEXT,
+    updated_at: TEXT,
+    pushed_at: TEXT,
+    stargazers_count: INTEGER,
+    watchers_count: INTEGER,
+    forks_count: INTEGER,
+    open_issues_count: INTEGER,
+    language: TEXT,
+    archived: BOOLEAN,
+    disabled: BOOLEAN,
+    license_key: TEXT,
+    license_name: TEXT,
+    topics: TEXT,
+    default_branch: TEXT
+  )`;
+  yield* sql`CREATE TABLE IF NOT EXISTS owner (
+    id INTEGER PRIMARY KEY,
+    login: TEXT UNIQUE,
+    url: TEXT,
+    avatar_url: TEXT
+  )`;
+
+  const repository = makeRepository(sql);
+
+  return RouterBuilder.make(noteApi).pipe(
+    RouterBuilder.handle('getStars', () =>
       Effect.gen(function* () {
-        const githubToken = yield* pipe(
-          Config.secret('GITHUB_TOKEN'),
-          Effect.orDie,
-        );
+        const star = yield* repository.GetStar(1);
+        return [star];
+      }).pipe(Effect.withSpan('getStars'), appError('could not get stars')),
+    ),
+    RouterBuilder.build,
+    Middlewares.errorLog,
+  );
+});
+const OpenTelemetryService = NodeSdk.layer(() => ({
+  resource: { serviceName: 'notes' },
+  spanProcessor: new BatchSpanProcessor(new ConsoleSpanExporter()),
+}));
 
-        const response = yield* pipe(
-          HttpClient.request.get('https://api.github.com/user/starred'),
-          HttpClient.request.setHeaders({
-            Accept: 'application/vnd.github.v3.star+json',
-          }),
-          HttpClient.request.bearerToken(Secret.value(githubToken)),
-          HttpClient.client.fetchOk,
-          Effect.tap((response) => Effect.log(response)),
-          // HttpClient.response.json,
-          Effect.andThen(HttpClient.response.schemaBodyJson(ResponseStarred)),
-          Effect.orDie,
-          Effect.scoped,
-        );
+// const get = <R>(
+//   path: string,
+//   body: (req: hono.Context) => Effect.Effect<HoneResponse, never, R>,
+// ) =>
+//   Effect.gen(function* () {
+//     const app = yield* Hono;
+//     const runPromise = Runtime.runPromise(yield* Effect.runtime<R>());
 
-        //       curl -L \
-        // -H "Accept: application/vnd.github.v3.star+json" \
-        // -H "Authorization: Bearer <YOUR-TOKEN>" \
-        // -H "X-GitHub-Api-Version: 2022-11-28" \
-        // https://api.github.com/user/starred
+//     app.get(path, (context) => runPromise(body(context)));
+//   });
 
-        return c.json({ response });
-      }).pipe(Effect.withSpan('route_index')),
-    );
+// const IndexRouteLive = Layer.effectDiscard(
+//   Effect.gen(function* () {
+//     yield* get('/', (c) =>
+//       Effect.gen(function* () {
+//         const githubToken = yield* pipe(
+//           Config.secret('GITHUB_TOKEN'),
+//           Effect.orDie,
+//         );
 
-    yield* get('/abc', (c) =>
-      Effect.gen(function* () {
-        return c.json({ data: 'abc' });
-      }).pipe(Effect.withSpan('route_index')),
-    );
-  }),
+//         const response = yield* pipe(
+//           HttpClient.request.get('https://api.github.com/user/starred'),
+//           HttpClient.request.setHeaders({
+//             Accept: 'application/vnd.github.v3.star+json',
+//           }),
+//           HttpClient.request.bearerToken(Secret.value(githubToken)),
+//           HttpClient.client.fetchOk,
+//           Effect.tap((response) => Effect.log(response)),
+//           // HttpClient.response.json,
+//           Effect.andThen(HttpClient.response.schemaBodyJson(ResponseStarred)),
+//           Effect.orDie,
+//           Effect.scoped,
+//         );
+
+//         //       curl -L \
+//         // -H "Accept: application/vnd.github.v3.star+json" \
+//         // -H "Authorization: Bearer <YOUR-TOKEN>" \
+//         // -H "X-GitHub-Api-Version: 2022-11-28" \
+//         // https://api.github.com/user/starred
+
+//         return c.json({ response });
+//       }).pipe(Effect.withSpan('route_index')),
+//     );
+
+//     yield* get('/abc', (c) =>
+//       Effect.gen(function* () {
+//         return c.json({ data: 'abc' });
+//       }).pipe(Effect.withSpan('route_index')),
+//     );
+//   }),
+// );
+
+// // Server Setup
+// const ServerLive = Layer.scopedDiscard(
+//   Effect.gen(function* (_) {
+//     const port = 3000;
+//     const app = yield* _(Hono);
+//     const runFork = Runtime.runFork(yield* _(Effect.runtime<never>()));
+
+//     yield* _(
+//       Effect.acquireRelease(
+//         Effect.sync(() =>
+//           serve({
+//             fetch: app.fetch,
+//             port,
+//           }).once('listening', () =>
+//             runFork(
+//               Console.log(`➡️ Server running on: http://127.0.0.1:${port}`),
+//             ),
+//           ),
+//         ),
+//         (server) =>
+//           Effect.sync(() => {
+//             server.close();
+//             console.log('--- closed');
+//           }),
+//       ),
+//     );
+//   }),
+// );
+
+// const AppLive = ServerLive.pipe(
+//   Layer.provide(IndexRouteLive),
+//   Layer.provide(HonoLive),
+// );
+
+// NodeRuntime.runMain(Layer.launch(AppLive));
+
+app.pipe(
+  Effect.flatMap(NodeServer.listen({ port: 3000 })),
+  Effect.provide(
+    sqlite.client.layer({
+      filename: Config.succeed('github-stars.db'),
+    }),
+  ),
+  Effect.provide(OpenTelemetryService),
+  NodeRuntime.runMain,
 );
-
-// Server Setup
-const ServerLive = Layer.scopedDiscard(
-  Effect.gen(function* (_) {
-    const port = 3000;
-    const app = yield* _(Hono);
-    const runFork = Runtime.runFork(yield* _(Effect.runtime<never>()));
-
-    yield* _(
-      Effect.acquireRelease(
-        Effect.sync(() =>
-          serve({
-            fetch: app.fetch,
-            port,
-          }).once('listening', () =>
-            runFork(
-              Console.log(`➡️ Server running on: http://127.0.0.1:${port}`),
-            ),
-          ),
-        ),
-        (server) =>
-          Effect.sync(() => {
-            server.close();
-            console.log('--- closed');
-          }),
-      ),
-    );
-  }),
-);
-
-const AppLive = ServerLive.pipe(
-  Layer.provide(IndexRouteLive),
-  Layer.provide(HonoLive),
-);
-
-NodeRuntime.runMain(Layer.launch(AppLive));
