@@ -58,5 +58,6 @@ cache/
 # Local Files
 .env*.local
 
+/github-stars.db*
 
-apps/github-stars-effect-e2e/artifacts
+/apps/github-stars-effect-e2e/artifacts
