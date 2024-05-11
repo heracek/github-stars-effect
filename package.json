@@ -9,6 +9,7 @@
     "op:start-all:server": "op run --env-file=./.env.local -- pnpm --silent -- start-all:server",
     "check-all": "pnpm --sequential run '/^check-all:.*/'",
     "check-all:lint": "nx run-many --target=lint --all --fix",
+    "check-all:sort": "sort-json ./.vscode/settings.json",
     "check-all:format": "nx format --all",
     "check-all:tsc": "nx run-many --target=tsc --all",
     "check-all:test": "nx run-many --target=test --all --exclude=github-stars-effect-e2e",
@@ -84,6 +85,7 @@
     "nx": "18.3.4",
     "prettier": "^2.8.8",
     "react-test-renderer": "18.2.0",
+    "sort-json": "^2.0.1",
     "ts-jest": "^29.1.2",
     "ts-node": "10.9.1",
     "typescript": "~5.4.5"
