@@ -1,5 +1,6 @@
 import { Effect } from 'effect';
 import * as S from '@effect/schema/Schema';
+import * as Sql from '@effect/sql';
 import * as sqlite from '@effect/sql-sqlite-node';
 
 import { ResponseStar } from '../schemas/ResponseStar';
@@ -42,11 +43,11 @@ export const tryInitiateStarsDbRepository = () =>
 
 export const makeStarsDbRepository = () =>
   Effect.gen(function* makeStarsDbRepository() {
-    // yield* tryInitiateStarsDbRepository();
+    yield* tryInitiateStarsDbRepository();
 
     const sql = yield* sqlite.client.SqliteClient;
 
-    const GetStar = sqlite.schema.single({
+    const GetStar = Sql.schema.single({
       Request: S.Number,
       Result: ResponseStar,
       execute: (id) => sql`SELECT * FROM starred_repo WHERE id = ${id}`,

@@ -22,7 +22,7 @@ export const noteApi = pipe(
     pipe(Api.get('getStars', '/stars'), Api.setResponseBody(ResponseStarred)),
   ),
   Api.addEndpoint(
-    pipe(Api.get('getTest', '/test'), Api.setResponseBody(S.Any)),
+    pipe(Api.get('getTest', '/test'), Api.setResponseBody(ResponseStarred)),
   ),
 );
 

@@ -1,6 +1,6 @@
 import * as S from '@effect/schema/Schema';
 
-export const ResponseRepo = S.Struct({
+export const ResponseRepoInput = S.Struct({
   id: S.Number,
   name: S.String,
   full_name: S.String,
@@ -33,7 +33,9 @@ export const ResponseRepo = S.Struct({
   }).pipe(S.NullOr),
   topics: S.Array(S.String),
   default_branch: S.String,
-}).pipe(
+});
+
+export const ResponseRepo = ResponseRepoInput.pipe(
   S.rename({
     full_name: 'fullName',
     html_url: 'url',
