@@ -20,7 +20,7 @@
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "cSpell.words": ["opentelemetry"],
+  "cSpell.words": ["opentelemetry", "rowid"],
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",

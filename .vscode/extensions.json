@@ -1,7 +1,13 @@
 {
   "recommendations": [
+    "editorconfig.editorconfig",
+    "effectful-tech.effect-vscode",
     "esbenp.prettier-vscode",
     "firsttris.vscode-jest-runner",
-    "nrwl.angular-console"
+    "mikestead.dotenv",
+    "nrwl.angular-console",
+    "qwtel.sqlite-viewer",
+    "streetsidesoftware.code-spell-checker",
+    "yoavbls.pretty-ts-errors"
   ]
 }

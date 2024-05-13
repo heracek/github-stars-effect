@@ -9,4 +9,5 @@ export const ResponseStar = S.Struct({
   S.rename({
     starred_at: 'starredAt',
   }),
+  S.annotations({ identifier: 'ResponseStar' }),
 );

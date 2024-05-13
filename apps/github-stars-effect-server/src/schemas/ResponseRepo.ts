@@ -1,22 +1,19 @@
 import * as S from '@effect/schema/Schema';
 
-export const ResponseRepoInput = S.Struct({
+class InputOwner extends S.Class<InputOwner>('InputOwner')({
+  id: S.Number,
+  login: S.String,
+  html_url: S.String,
+  avatar_url: S.String,
+}) {}
+
+class ResponseRepoInput extends S.Class<ResponseRepoInput>('RepoWithOwnerId')({
   id: S.Number,
   name: S.String,
   full_name: S.String,
   html_url: S.String,
   description: S.String.pipe(S.NullOr),
-  owner: S.Struct({
-    id: S.Number,
-    login: S.String,
-    html_url: S.String,
-    avatar_url: S.String,
-  }).pipe(
-    S.rename({
-      html_url: 'url',
-      avatar_url: 'avatarUrl',
-    }),
-  ),
+  owner: InputOwner,
   created_at: S.Date,
   updated_at: S.Date,
   pushed_at: S.Date,
@@ -30,22 +27,15 @@ export const ResponseRepoInput = S.Struct({
   license: S.Struct({
     key: S.String,
     name: S.String,
-  }).pipe(S.NullOr),
+  }).pipe(S.annotations({ identifier: 'License' }), S.NullOr),
   topics: S.Array(S.String),
-  default_branch: S.String,
-});
+  defaultBranch: S.propertySignature(S.String).pipe(
+    S.fromKey('default_branch'),
+  ),
+}) {
+  get ownerId() {
+    return this.owner.id;
+  }
+}
 
-export const ResponseRepo = ResponseRepoInput.pipe(
-  S.rename({
-    full_name: 'fullName',
-    html_url: 'url',
-    created_at: 'createdAt',
-    updated_at: 'updatedAt',
-    pushed_at: 'pushedAt',
-    stargazers_count: 'stars',
-    watchers_count: 'watchers',
-    forks_count: 'forks',
-    open_issues_count: 'openIssues',
-    default_branch: 'defaultBranch',
-  }),
-);
+export const ResponseRepo = ResponseRepoInput;
