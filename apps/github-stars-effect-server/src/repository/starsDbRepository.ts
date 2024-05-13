@@ -20,36 +20,42 @@ export const tryInitiateStarsDbRepository = () =>
         )`;
 
         // See: https://sqlite.org/fts5.html#external_content_tables
-        yield* sql`CREATE VIRTUAL TABLE IF NOT EXISTS starred_repo_idx USING fts5(
-          name,
-          fullName,
-          owner,
-          language,
-          description,
-          topics,
-          content='tbl',
-          content_rowid='starred_repo'
-        )`;
-
-        yield* sql`CREATE TRIGGER IF NOT EXISTS starred_repo_ai AFTER INSERT ON starred_repo BEGIN
-          INSERT INTO starred_repo_idx(
-            rowid,
+        yield* sql`CREATE VIRTUAL TABLE IF NOT EXISTS starred_repo_idx
+          USING fts5(
             name,
             fullName,
             owner,
             language,
             description,
-            topics
-          ) VALUES (
-            new.id,
-            new.name,
-            new.full_name,
-            json_extract(new.owner, '$.login'),
-            new.language,
-            new.description,
-            new.topics
-          );
-        END`;
+            topics,
+            content='tbl',
+            content_rowid='starred_repo',
+            tokenize="trigram remove_diacritics 1"
+          )
+        `;
+
+        yield* sql`CREATE TRIGGER IF NOT EXISTS starred_repo_ai
+          AFTER INSERT ON starred_repo
+          BEGIN
+            INSERT INTO starred_repo_idx(
+              rowid,
+              name,
+              fullName,
+              owner,
+              language,
+              description,
+              topics
+            ) VALUES (
+              new.id,
+              new.name,
+              new.full_name,
+              json_extract(new.owner, '$.login'),
+              new.language,
+              new.description,
+              new.topics
+            );
+          END
+        `;
       }),
     ),
   );
@@ -92,7 +98,7 @@ class RepositoryStarredRepo extends S.Class<RepositoryStarredRepo>(
   full_name: S.String,
   owner: JsonFiled(RepositoryOwner),
   html_url: S.String,
-  language: S.String,
+  language: S.String.pipe(S.NullOr),
   description: S.String.pipe(S.NullOr),
   topics: JsonFiled(S.Array(S.String)),
 }) {}
@@ -109,16 +115,17 @@ export const makeStarsDbRepository = () =>
         Request: RepositoryStarredRepo,
         Result: S.Struct({ id: S.Number }),
         execute: (values) =>
-          sql`INSERT OR REPLACE INTO starred_repo ${sql.insert(
-            values,
-          )} RETURNING id`,
+          sql`INSERT OR REPLACE INTO starred_repo
+            ${sql.insert(values)}
+            RETURNING id`,
       },
     );
 
     const GetStar = Sql.schema.single({
       Request: S.Number,
       Result: RepositoryStarredRepo,
-      execute: (id) => sql`SELECT * FROM starred_repo WHERE id = ${id}`,
+      execute: (id) => sql`SELECT * FROM starred_repo
+        WHERE id = ${id}`,
     });
 
     const fullTextSearch = Sql.schema.findAll({
@@ -127,8 +134,11 @@ export const makeStarsDbRepository = () =>
       execute: (fullText) =>
         sql`
           SELECT starred_repo.* FROM starred_repo
-          JOIN starred_repo_idx ON starred_repo.id = starred_repo_idx.rowid
-          WHERE starred_repo_idx MATCH ${fullText}`,
+          JOIN starred_repo_idx ON
+            starred_repo.id = starred_repo_idx.rowid
+          WHERE
+            starred_repo_idx MATCH ${fullText}
+        `,
     });
 
     const FunctionList = Sql.schema.findAll({
