@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { FlatList, Platform } from 'react-native';
+import { FlatList, Platform, StyleSheet } from 'react-native';
 import * as S from '@effect/schema/Schema';
 import { GitFork, Star } from '@tamagui/lucide-icons';
 import { useQuery } from '@tanstack/react-query';
@@ -85,8 +85,8 @@ export function SearchStarsScreen() {
           <YStack
             paddingHorizontal="$3"
             paddingBottom="$2"
-            borderBottomWidth="$0.25"
-            borderBottomColor="$gray10"
+            borderBottomWidth={StyleSheet.hairlineWidth}
+            borderBottomColor="$color025"
           >
             <XStack>
               <Label
@@ -116,12 +116,19 @@ export function SearchStarsScreen() {
               outlineWidth={2}
               focusStyle={{ borderColor: '$blue10' }}
               focusVisibleStyle={{ outlineColor: '$blue10' }}
+              autoCapitalize="none"
+              clearButtonMode="always"
             />
           </YStack>
         }
         ItemSeparatorComponent={
           Platform.OS !== 'android'
-            ? () => <View borderTopColor="$gray9" borderTopWidth="$0.25" />
+            ? () => (
+                <View
+                  borderTopColor="$color025"
+                  borderTopWidth={StyleSheet.hairlineWidth}
+                />
+              )
             : null
         }
         renderItem={({ item: repo }) => (
