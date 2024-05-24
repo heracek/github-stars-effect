@@ -47,6 +47,9 @@ dependencies:
   '@opentelemetry/sdk-trace-web':
     specifier: ^1.24.1
     version: 1.24.1(@opentelemetry/api@1.8.0)
+  '@react-navigation/elements':
+    specifier: ^1.3.30
+    version: 1.3.30(@react-navigation/native@6.1.17)(react-native-safe-area-context@4.10.1)(react-native@0.74.1)(react@18.2.0)
   '@react-navigation/native':
     specifier: ^6.1.17
     version: 6.1.17(react-native@0.74.1)(react@18.2.0)

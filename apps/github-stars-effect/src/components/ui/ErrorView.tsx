@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertTriangle } from '@tamagui/lucide-icons';
-import { Button, H2, Text, YStack } from 'tamagui';
+import { Button, H2, Text, View, YStack } from 'tamagui';
 
 export type ErrorViewProps = {
   message: string;
@@ -14,18 +14,21 @@ export function ErrorView({ message, onRefresh }: ErrorViewProps) {
       alignContent="center"
       justifyContent="center"
       paddingHorizontal="$6"
-      paddingBottom="$12"
       gap="$4"
     >
       <AlertTriangle size="$8" color="$color9" alignSelf="center" />
 
-      <H2 textAlign="center" color="$color075">
-        Error fetching stars
-      </H2>
+      <View>
+        <H2 textAlign="center" color="$color075">
+          Error fetching stars
+        </H2>
+      </View>
 
-      <Text fontSize="$6" textAlign="center" color="$color">
-        {message}
-      </Text>
+      <View>
+        <Text fontSize="$6" textAlign="center" color="$color">
+          {message}
+        </Text>
+      </View>
 
       {onRefresh ? (
         <Button

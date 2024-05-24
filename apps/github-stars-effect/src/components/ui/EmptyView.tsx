@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search } from '@tamagui/lucide-icons';
-import { H2, Text, YStack } from 'tamagui';
+import { H2, Text, View, YStack } from 'tamagui';
 
 export type EmptyViewProps = {
   title: string;
@@ -14,19 +14,22 @@ export function EmptyView({ title, subTitle }: EmptyViewProps) {
       alignContent="center"
       justifyContent="center"
       paddingHorizontal="$6"
-      paddingBottom="$12"
       gap="$4"
     >
       <Search size="$8" color="$color9" alignSelf="center" />
 
-      <H2 textAlign="center" color="$color075">
-        {title}
-      </H2>
+      <View>
+        <H2 textAlign="center" color="$color075">
+          {title}
+        </H2>
+      </View>
 
       {subTitle ? (
-        <Text fontSize="$6" textAlign="center">
-          {subTitle}
-        </Text>
+        <View>
+          <Text fontSize="$6" textAlign="center">
+            {subTitle}
+          </Text>
+        </View>
       ) : null}
     </YStack>
   );
