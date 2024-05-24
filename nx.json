@@ -56,5 +56,14 @@
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     }
+  },
+  "generators": {
+    "@nx/react": {
+      "library": {
+        "pascalCaseFiles": true,
+        "style": "none",
+        "unitTestRunner": "jest"
+      }
+    }
   }
 }

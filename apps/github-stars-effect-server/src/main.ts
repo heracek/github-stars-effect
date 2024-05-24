@@ -5,6 +5,8 @@ import { NodeServer } from 'effect-http-node';
 import { NodeSdk } from '@effect/opentelemetry';
 import { NodeRuntime } from '@effect/platform-node';
 import * as sqlite from '@effect/sql-sqlite-node';
+import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import {
   BatchSpanProcessor,
   ConsoleSpanExporter,
@@ -12,9 +14,18 @@ import {
 
 import { app } from './app';
 
+const ENABLE_DOCKER_TELEMETRY = true;
+
 const OpenTelemetryService = NodeSdk.layer(() => ({
   resource: { serviceName: 'github-stars-effect-server' },
-  spanProcessor: new BatchSpanProcessor(new ConsoleSpanExporter()),
+  spanProcessor: new BatchSpanProcessor(
+    ENABLE_DOCKER_TELEMETRY
+      ? new OTLPTraceExporter()
+      : new ConsoleSpanExporter(),
+  ),
+  // metricReader: ENABLE_DOCKER_TELEMETRY
+  //   ? new PrometheusExporter({ port: 9090 }, console.error)
+  //   : undefined,
 }));
 
 pipe(
@@ -34,6 +45,6 @@ pipe(
       ),
     );
   }),
-  // Effect.provide(OpenTelemetryService),
+  Effect.provide(OpenTelemetryService),
   NodeRuntime.runMain,
 );

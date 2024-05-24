@@ -61,3 +61,6 @@ cache/
 /github-stars.db*
 
 /apps/github-stars-effect-e2e/artifacts
+
+# Docker Compose
+/docker/local/tempo-data

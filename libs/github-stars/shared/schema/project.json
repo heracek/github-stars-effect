@@ -1,0 +1,9 @@
+{
+  "name": "github-stars-shared-schema",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/github-stars/shared/schema/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project github-stars-shared-schema --web",
+  "targets": {}
+}

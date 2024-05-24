@@ -19,7 +19,11 @@
         "name": "@effect/language-service"
       }
     ],
-    "paths": {}
+    "paths": {
+      "@crfx/github-stars-shared-schema": [
+        "libs/github-stars/shared/schema/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

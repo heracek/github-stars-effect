@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect';
+import { Effect, flow, pipe } from 'effect';
 import { ParseResult } from '@effect/schema';
 import * as S from '@effect/schema/Schema';
 import * as Sql from '@effect/sql';
@@ -89,7 +89,7 @@ const JsonFiled = <A>(outSchema: S.Schema<A>) =>
     }),
   );
 
-class RepositoryStarredRepo extends S.Class<RepositoryStarredRepo>(
+export class RepositoryStarredRepo extends S.Class<RepositoryStarredRepo>(
   'RepositoryStarredRepo',
 )({
   id: S.Number,
@@ -138,6 +138,8 @@ export const makeStarsDbRepository = () =>
             starred_repo.id = starred_repo_idx.rowid
           WHERE
             starred_repo_idx MATCH ${fullText}
+          ORDER BY date(starred_repo.starred_at) DESC
+          LIMIT 50
         `,
     });
 
@@ -150,7 +152,10 @@ export const makeStarsDbRepository = () =>
     return {
       GetStar,
       FunctionList,
-      insertOrUpdateStarredRepo: InsertOrUpdateStarredRepo.execute,
+      insertOrUpdateStarredRepo: flow(
+        InsertOrUpdateStarredRepo.execute,
+        Effect.withRequestBatching(true),
+      ),
       fullTextSearch,
     };
   });
