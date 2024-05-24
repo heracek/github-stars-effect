@@ -2,3 +2,5 @@ node_modules
 
 # Docker Compose
 /docker/local/tempo-data
+
+.tamagui

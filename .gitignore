@@ -64,3 +64,5 @@ cache/
 
 # Docker Compose
 /docker/local/tempo-data
+
+.tamagui
