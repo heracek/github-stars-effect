@@ -2,6 +2,7 @@
 /dist
 /coverage
 /.nx/cache
+/.nx/workspace-data
 
 package.json
 pnpm-lock.yaml
