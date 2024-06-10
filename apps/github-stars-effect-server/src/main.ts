@@ -3,7 +3,8 @@ import 'dotenv-flow/config';
 import { Config, Effect, pipe } from 'effect';
 import { NodeServer } from 'effect-http-node';
 import { NodeSdk } from '@effect/opentelemetry';
-import { NodeRuntime } from '@effect/platform-node';
+import { Path } from '@effect/platform';
+import { NodePath, NodeRuntime } from '@effect/platform-node';
 import * as sqlite from '@effect/sql-sqlite-node';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
@@ -30,9 +31,18 @@ const OpenTelemetryService = NodeSdk.layer(() => ({
 
 pipe(
   Effect.gen(function* () {
+    const path = yield* Path.Path;
+
     const port = yield* Config.integer('PORT').pipe(Config.withDefault(4000));
     const dbFilenameConfig = Config.string('DB_FILENAME').pipe(
-      Config.withDefault('github-stars.db'),
+      Config.withDefault(
+        path.resolve(
+          'apps',
+          'github-stars-effect-server',
+          'db',
+          'github-stars.db',
+        ),
+      ),
     );
 
     return yield* pipe(
@@ -46,5 +56,6 @@ pipe(
     );
   }),
   Effect.provide(OpenTelemetryService),
+  Effect.provide(NodePath.layer),
   NodeRuntime.runMain,
 );
