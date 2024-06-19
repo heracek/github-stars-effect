@@ -19,4 +19,7 @@ export class StarredRepo extends S.Class<StarredRepo>('StarredRepo')({
   topics: S.Array(S.String),
 }) {}
 
-export const GetStarsResponse = S.Array(StarredRepo);
+export const GetStarsResponse = S.Struct({
+  error: S.String.pipe(S.NullOr),
+  results: S.Array(StarredRepo),
+});

@@ -5,12 +5,14 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
+import { pipe } from 'effect/Function';
+import * as O from 'effect/Option';
 import * as S from '@effect/schema/Schema';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { GitFork, Star } from '@tamagui/lucide-icons';
 import { useQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
-import { Link, Stack } from 'expo-router';
+import { Link, router, Stack, useLocalSearchParams } from 'expo-router';
 import { Input, Label, Spinner, Text, View, XStack, YStack } from 'tamagui';
 
 import { GetStarsResponse } from '@crfx/github-stars-shared-schema';
@@ -32,26 +34,26 @@ async function fetchStars({
 }) {
   const queryString = queryKey[1];
 
-  if (queryString.length < MINIMUM_LENGTH) {
-    return [];
-  }
-
   const url = new URL('http://localhost:4000/stars');
   url.searchParams.set('q', queryString);
 
-  const stars = await (await fetch(url, { signal })).json();
+  const jsonResponse = await (await fetch(url, { signal })).json();
 
-  return S.decodeSync(GetStarsResponse)(stars);
+  return pipe(
+    jsonResponse,
+    S.decodeUnknownSync(GetStarsResponse),
+  );
 }
 
 export function SearchStarsScreen() {
-  const [searchString, setSearchString] = useState('effect');
+  const localSearchParams = useLocalSearchParams<{ q?: string }>();
+  const searchString = localSearchParams.q ?? '';
 
   const isValidSearchStringLength = useMemo(() => {
     return searchString.trim().length >= MINIMUM_LENGTH;
   }, [searchString]);
 
-  const query = useQuery({
+  const searchQuery = useQuery({
     queryKey: ['search-stars', searchString],
     queryFn: fetchStars,
     enabled: isValidSearchStringLength,
@@ -70,16 +72,16 @@ export function SearchStarsScreen() {
         keyboardVerticalOffset={height}
       >
         <FlatList
-          data={query.data ?? []}
+          data={searchQuery.data?.results ?? []}
           keyExtractor={(item) => `${item.id}`}
           contentContainerStyle={{ flexGrow: 1 }}
           ListEmptyComponent={
-            query.error ? (
+            searchQuery.error ? (
               <ErrorView
-                message={query.error.message}
-                onRefresh={() => query.refetch()}
+                message={searchQuery.error.message}
+                onRefresh={() => searchQuery.refetch()}
               />
-            ) : query.isFetching ? (
+            ) : searchQuery.isFetching ? (
               <LoadingView />
             ) : (
               <EmptyView
@@ -111,14 +113,14 @@ export function SearchStarsScreen() {
                 <Spinner
                   marginVertical="$3"
                   marginEnd="$1"
-                  opacity={query.isFetching && query.data ? 1 : 0}
+                  opacity={searchQuery.isFetching && searchQuery.data ? 1 : 0}
                 />
               </XStack>
               <Input
                 flex={1}
                 id="search-box"
                 value={searchString}
-                onChangeText={(str) => setSearchString(str)}
+                onChangeText={(str) => router.setParams({ q: str })}
                 size="$3"
                 placeholder="Search for something..."
                 borderRadius={1000}

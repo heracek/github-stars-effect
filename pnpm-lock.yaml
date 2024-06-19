@@ -23,6 +23,9 @@ dependencies:
   '@effect/sql':
     specifier: ^0.3.14
     version: 0.3.14(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
+  '@effect/sql-drizzle':
+    specifier: ^0.1.6
+    version: 0.1.6(@effect/sql@0.3.14)(drizzle-orm@0.31.2)(effect@3.3.5)
   '@effect/sql-sqlite-node':
     specifier: ^0.3.15
     version: 0.3.15(@effect/platform@0.57.4)(@effect/sql@0.3.14)(effect@3.3.5)
@@ -74,6 +77,9 @@ dependencies:
   dotenv-flow:
     specifier: ^4.1.0
     version: 4.1.0
+  drizzle-orm:
+    specifier: ^0.31.2
+    version: 0.31.2(@opentelemetry/api@1.9.0)(@types/react@18.2.79)(react@18.2.0)
   effect:
     specifier: ^3.3.5
     version: 3.3.5
@@ -2256,6 +2262,18 @@ packages:
     dependencies:
       effect: 3.3.5
       fast-check: 3.19.0
+    dev: false
+
+  /@effect/sql-drizzle@0.1.6(@effect/sql@0.3.14)(drizzle-orm@0.31.2)(effect@3.3.5):
+    resolution: {integrity: sha512-PIZmkpH00X548+i1kaF+2sBhSl2+r9SR1tQvC86yar9u0rJoteRKolameAHw2az67Kp4YMfd3BqHdX5+wJSJDg==}
+    peerDependencies:
+      '@effect/sql': ^0.3.14
+      drizzle-orm: ^0.30.10
+      effect: ^3.3.5
+    dependencies:
+      '@effect/sql': 0.3.14(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
+      drizzle-orm: 0.31.2(@opentelemetry/api@1.9.0)(@types/react@18.2.79)(react@18.2.0)
+      effect: 3.3.5
     dev: false
 
   /@effect/sql-sqlite-node@0.3.15(@effect/platform@0.57.4)(@effect/sql@0.3.14)(effect@3.3.5):
@@ -9734,6 +9752,94 @@ packages:
   /dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
+
+  /drizzle-orm@0.31.2(@opentelemetry/api@1.9.0)(@types/react@18.2.79)(react@18.2.0):
+    resolution: {integrity: sha512-QnenevbnnAzmbNzQwbhklvIYrDE8YER8K7kSrAWQSV1YvFCdSQPzj+jzqRdTSsV2cDqSpQ0NXGyL1G9I43LDLg==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3'
+      '@cloudflare/workers-types': '>=3'
+      '@electric-sql/pglite': '>=0.1.1'
+      '@libsql/client': '*'
+      '@neondatabase/serverless': '>=0.1'
+      '@op-engineering/op-sqlite': '>=2'
+      '@opentelemetry/api': ^1.4.1
+      '@planetscale/database': '>=1'
+      '@tidbcloud/serverless': '*'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/react': '>=18'
+      '@types/sql.js': '*'
+      '@vercel/postgres': '>=0.8.0'
+      '@xata.io/client': '*'
+      better-sqlite3: '>=7'
+      bun-types: '*'
+      expo-sqlite: '>=13.2.0'
+      knex: '*'
+      kysely: '*'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      react: '>=18'
+      sql.js: '>=1'
+      sqlite3: '>=5'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@electric-sql/pglite':
+        optional: true
+      '@libsql/client':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@op-engineering/op-sqlite':
+        optional: true
+      '@opentelemetry/api':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@tidbcloud/serverless':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/react':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      '@vercel/postgres':
+        optional: true
+      '@xata.io/client':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      expo-sqlite:
+        optional: true
+      knex:
+        optional: true
+      kysely:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      react:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+      '@types/react': 18.2.79
+      react: 18.2.0
+    dev: false
 
   /dtrace-provider@0.8.8:
     resolution: {integrity: sha512-b7Z7cNtHPhH9EJhNNbbeqTcXB8LGFFZhq1PGgEvpeHlzd36bhbdTWoE/Ba/YguqpBSlAPKnARWhVlhunCMwfxg==}

@@ -81,8 +81,11 @@ export const app = Effect.gen(function* () {
   return RouterBuilder.make(noteApi).pipe(
     RouterBuilder.handle('getStars', ({ query }) =>
       Effect.gen(function* () {
-        const stars = yield* repository.fullTextSearch(query.q);
-        return stars;
+        const results = yield* repository.fullTextSearch(query.q);
+        return {
+          results,
+          error: null,
+        };
       }).pipe(Effect.withSpan('getStars'), appError('could not get stars')),
     ),
     RouterBuilder.handle('getTest', () =>

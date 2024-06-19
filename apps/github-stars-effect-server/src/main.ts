@@ -1,61 +1,26 @@
 import 'dotenv-flow/config';
 
-import { Config, Effect, pipe } from 'effect';
+import { Effect, pipe } from 'effect';
 import { NodeServer } from 'effect-http-node';
-import { NodeSdk } from '@effect/opentelemetry';
-import { Path } from '@effect/platform';
 import { NodePath, NodeRuntime } from '@effect/platform-node';
-import * as sqlite from '@effect/sql-sqlite-node';
-import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import {
-  BatchSpanProcessor,
-  ConsoleSpanExporter,
-} from '@opentelemetry/sdk-trace-node';
 
 import { app } from './app';
+import { AppConfig, AppConfigLive } from './layers/AppConfig';
+import { OpenTelemetryService } from './layers/OpenTelemetryService';
+import { SqliteClientLive } from './layers/SqliteClient';
+import { SqliteDrizzleLive } from './layers/SqliteDrizzle';
 
-const ENABLE_DOCKER_TELEMETRY = true;
-
-const OpenTelemetryService = NodeSdk.layer(() => ({
-  resource: { serviceName: 'github-stars-effect-server' },
-  spanProcessor: new BatchSpanProcessor(
-    ENABLE_DOCKER_TELEMETRY
-      ? new OTLPTraceExporter()
-      : new ConsoleSpanExporter(),
-  ),
-  // metricReader: ENABLE_DOCKER_TELEMETRY
-  //   ? new PrometheusExporter({ port: 9090 }, console.error)
-  //   : undefined,
-}));
-
-pipe(
+const liveApp = pipe(
   Effect.gen(function* () {
-    const path = yield* Path.Path;
+    const { port } = yield* AppConfig;
 
-    const port = yield* Config.integer('PORT').pipe(Config.withDefault(4000));
-    const dbFilenameConfig = Config.string('DB_FILENAME').pipe(
-      Config.withDefault(
-        path.resolve(
-          'apps',
-          'github-stars-effect-server',
-          'db',
-          'github-stars.db',
-        ),
-      ),
-    );
-
-    return yield* pipe(
-      app,
-      Effect.flatMap(NodeServer.listen({ port })),
-      Effect.provide(
-        sqlite.client.layer({
-          filename: dbFilenameConfig,
-        }),
-      ),
-    );
+    yield* pipe(app, Effect.flatMap(NodeServer.listen({ port })));
   }),
+  Effect.provide(SqliteDrizzleLive),
+  Effect.provide(SqliteClientLive),
   Effect.provide(OpenTelemetryService),
+  Effect.provide(AppConfigLive),
   Effect.provide(NodePath.layer),
-  NodeRuntime.runMain,
 );
+
+NodeRuntime.runMain(liveApp);

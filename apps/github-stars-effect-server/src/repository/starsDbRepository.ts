@@ -138,7 +138,7 @@ export const makeStarsDbRepository = () =>
             starred_repo.id = starred_repo_idx.rowid
           WHERE
             starred_repo_idx MATCH ${fullText}
-          ORDER BY date(starred_repo.starred_at) DESC
+          ORDER BY rank, date(starred_repo.starred_at) DESC
           LIMIT 50
         `,
     });
