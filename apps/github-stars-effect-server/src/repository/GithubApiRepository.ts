@@ -1,5 +1,9 @@
 import { Context, Effect, Layer, pipe, Redacted } from 'effect';
-import { HttpClient } from '@effect/platform';
+import {
+  HttpClient,
+  HttpClientRequest,
+  HttpClientResponse,
+} from '@effect/platform';
 import * as S from '@effect/schema/Schema';
 
 import { AppConfig } from '../layers/AppConfig';
@@ -23,14 +27,14 @@ export const GithubApiRepositoryLive = Layer.effect(
 
     const getStarred = ({ page }: { page: number }) =>
       pipe(
-        HttpClient.request.get('https://api.github.com/user/starred'),
-        HttpClient.request.setHeaders({
+        HttpClientRequest.get('https://api.github.com/user/starred'),
+        HttpClientRequest.setHeaders({
           Accept: 'application/vnd.github.v3.star+json',
         }),
-        HttpClient.request.bearerToken(Redacted.value(githubToken)),
-        HttpClient.request.setUrlParams({ per_page: '100', page: `${page}` }),
-        HttpClient.client.fetchOk,
-        Effect.andThen(HttpClient.response.schemaBodyJson(ResponseStarred)),
+        HttpClientRequest.bearerToken(Redacted.value(githubToken)),
+        HttpClientRequest.setUrlParams({ per_page: '100', page: `${page}` }),
+        HttpClient.fetchOk,
+        Effect.andThen(HttpClientResponse.schemaBodyJson(ResponseStarred)),
         Effect.orDie,
         Effect.scoped,
         Effect.withSpan('GithubRepository.getStarred', {

@@ -6,29 +6,29 @@ settings:
 
 dependencies:
   '@effect/experimental':
-    specifier: ~0.16.29
-    version: 0.16.29(@effect/platform-node@0.51.13)(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
+    specifier: ~0.17.1
+    version: 0.17.1(@effect/platform-node@0.53.1)(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0)
   '@effect/opentelemetry':
-    specifier: ~0.34.22
-    version: 0.34.22(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.25.1)(@opentelemetry/sdk-metrics@1.25.1)(@opentelemetry/sdk-trace-node@1.25.1)(@opentelemetry/sdk-trace-web@1.25.1)(@opentelemetry/semantic-conventions@1.25.1)(effect@3.3.5)
+    specifier: ~0.34.23
+    version: 0.34.23(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.25.1)(@opentelemetry/sdk-metrics@1.25.1)(@opentelemetry/sdk-trace-node@1.25.1)(@opentelemetry/sdk-trace-web@1.25.1)(@opentelemetry/semantic-conventions@1.25.1)(effect@3.4.0)
   '@effect/platform':
-    specifier: ~0.57.4
-    version: 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
+    specifier: ~0.58.2
+    version: 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
   '@effect/platform-node':
-    specifier: ~0.51.13
-    version: 0.51.13(@effect/platform@0.57.4)(effect@3.3.5)
+    specifier: ~0.53.1
+    version: 0.53.1(@effect/platform@0.58.2)(effect@3.4.0)
   '@effect/schema':
-    specifier: ~0.68.1
-    version: 0.68.1(effect@3.3.5)
+    specifier: ~0.68.5
+    version: 0.68.5(effect@3.4.0)
   '@effect/sql':
-    specifier: ~0.3.14
-    version: 0.3.14(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
+    specifier: ~0.4.2
+    version: 0.4.2(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0)
   '@effect/sql-drizzle':
-    specifier: ~0.1.6
-    version: 0.1.6(@effect/sql@0.3.14)(drizzle-orm@0.31.2)(effect@3.3.5)
+    specifier: ~0.2.2
+    version: 0.2.2(@effect/sql@0.4.2)(drizzle-orm@0.31.2)(effect@3.4.0)
   '@effect/sql-sqlite-node':
-    specifier: ~0.3.15
-    version: 0.3.15(@effect/platform@0.57.4)(@effect/sql@0.3.14)(effect@3.3.5)
+    specifier: ~0.4.2
+    version: 0.4.2(@effect/platform@0.58.2)(@effect/sql@0.4.2)(effect@3.4.0)
   '@expo/metro-config':
     specifier: 0.18.7
     version: 0.18.7
@@ -81,14 +81,14 @@ dependencies:
     specifier: ^0.31.2
     version: 0.31.2(@opentelemetry/api@1.9.0)(@types/react@18.2.79)(react@18.2.0)
   effect:
-    specifier: ~3.3.5
-    version: 3.3.5
+    specifier: ~3.4.0
+    version: 3.4.0
   effect-http:
-    specifier: ^0.69.0
-    version: 0.69.0(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
+    specifier: ^0.70.0
+    version: 0.70.0(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0)
   effect-http-node:
-    specifier: ^0.14.0
-    version: 0.14.0(@effect/platform-node@0.51.13)(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect-http@0.69.0)(effect@3.3.5)
+    specifier: ^0.15.0
+    version: 0.15.0(@effect/platform-node@0.53.1)(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect-http@0.70.0)(effect@3.4.0)
   expo:
     specifier: 51.0.14
     version: 51.0.14(@babel/core@7.24.7)(@babel/preset-env@7.24.7)
@@ -2155,13 +2155,13 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@effect/experimental@0.16.29(@effect/platform-node@0.51.13)(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5):
-    resolution: {integrity: sha512-BImzdJLOTfwtHPrke0bjtyttLVyuUwAMLkIU0zme175fPDm8gqHkeU279fnrzX3v6HnW1RfLAJlLhIL22t20AA==}
+  /@effect/experimental@0.17.1(@effect/platform-node@0.53.1)(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0):
+    resolution: {integrity: sha512-5DoDbXdDIRifZggT1i0hx534sAGv2AuZ7K7yXgGEjU/B9gs/h0bHqCox6JM9zwVMI8pEZtUxH/n+AtQ3CwbSeg==}
     peerDependencies:
-      '@effect/platform': ^0.57.4
-      '@effect/platform-node': ^0.51.13
-      '@effect/schema': ^0.68.1
-      effect: ^3.3.5
+      '@effect/platform': ^0.58.2
+      '@effect/platform-node': ^0.53.1
+      '@effect/schema': ^0.68.5
+      effect: ^3.4.0
       ioredis: ^5
       lmdb: ^3
       ws: ^8
@@ -2175,10 +2175,10 @@ packages:
       ws:
         optional: true
     dependencies:
-      '@effect/platform': 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
-      '@effect/platform-node': 0.51.13(@effect/platform@0.57.4)(effect@3.3.5)
-      '@effect/schema': 0.68.1(effect@3.3.5)
-      effect: 3.3.5
+      '@effect/platform': 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
+      '@effect/platform-node': 0.53.1(@effect/platform@0.58.2)(effect@3.4.0)
+      '@effect/schema': 0.68.5(effect@3.4.0)
+      effect: 3.4.0
       msgpackr: 1.10.2
     dev: false
 
@@ -2186,8 +2186,8 @@ packages:
     resolution: {integrity: sha512-BnlM8LlaqCAYgdRfxlbR7gXGh/FD1scL1fPgNVJEPoOM08od1jtJz+iKhwfaud8TPnnhZR+TED2h5ynjanLeCQ==}
     dev: true
 
-  /@effect/opentelemetry@0.34.22(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.25.1)(@opentelemetry/sdk-metrics@1.25.1)(@opentelemetry/sdk-trace-node@1.25.1)(@opentelemetry/sdk-trace-web@1.25.1)(@opentelemetry/semantic-conventions@1.25.1)(effect@3.3.5):
-    resolution: {integrity: sha512-6jCYEdxJ+RDcYPGb4vGuLhcLBFfwtladgqbzCtPP/MmRohv+E2/wxv2XVh59aXD9jFwb9QL/YMqa/V5BlQXVRA==}
+  /@effect/opentelemetry@0.34.23(@opentelemetry/api@1.9.0)(@opentelemetry/resources@1.25.1)(@opentelemetry/sdk-metrics@1.25.1)(@opentelemetry/sdk-trace-node@1.25.1)(@opentelemetry/sdk-trace-web@1.25.1)(@opentelemetry/semantic-conventions@1.25.1)(effect@3.4.0):
+    resolution: {integrity: sha512-C8Bp7SziKIqoJm1oUHhgqu+TZ21ZiyCXveH2pPtgQaAZgMHRY5825sweE5FrUlYit/UrQJnK0U5uwznm5eckjw==}
     peerDependencies:
       '@opentelemetry/api': ^1.6
       '@opentelemetry/resources': ^1.22
@@ -2196,7 +2196,7 @@ packages:
       '@opentelemetry/sdk-trace-node': ^1.22
       '@opentelemetry/sdk-trace-web': ^1.22
       '@opentelemetry/semantic-conventions': ^1.24.1
-      effect: ^3.3.5
+      effect: ^3.4.0
     peerDependenciesMeta:
       '@opentelemetry/sdk-metrics':
         optional: true
@@ -2213,30 +2213,30 @@ packages:
       '@opentelemetry/sdk-trace-node': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-web': 1.25.1(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.25.1
-      effect: 3.3.5
+      effect: 3.4.0
     dev: false
 
-  /@effect/platform-node-shared@0.6.13(@effect/platform@0.57.4)(effect@3.3.5):
-    resolution: {integrity: sha512-dfpWAuMUwOPYx222hiT0sTpPFhx4eK4/UmV0l+7fbtg7lZsJzProhUgTF2awKNm0KRMFh3YMWWr3o0ruRtdrLA==}
+  /@effect/platform-node-shared@0.8.1(@effect/platform@0.58.2)(effect@3.4.0):
+    resolution: {integrity: sha512-GYMs8TfYUXOoNSKNkJz+mlRuQtSFBFTvI7BpK+wMwx705Ud9yYOM+Ab+FYmD4/JHhMqyy+IjmHdKpeVrUfZQ4g==}
     peerDependencies:
-      '@effect/platform': ^0.57.4
-      effect: ^3.3.5
+      '@effect/platform': ^0.58.2
+      effect: ^3.4.0
     dependencies:
-      '@effect/platform': 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
+      '@effect/platform': 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
       '@parcel/watcher': 2.4.1
-      effect: 3.3.5
+      effect: 3.4.0
       multipasta: 0.2.2
     dev: false
 
-  /@effect/platform-node@0.51.13(@effect/platform@0.57.4)(effect@3.3.5):
-    resolution: {integrity: sha512-egcxOzmgwTEy+2DTvZ7SaVUKdQXVZrf7rTQFkPi0P6ummzGobW5gIMTHsDhEDrWdglNcS1QDGjFYrUbPTRLb7w==}
+  /@effect/platform-node@0.53.1(@effect/platform@0.58.2)(effect@3.4.0):
+    resolution: {integrity: sha512-1Qk9Z/hAwtBsYHWJnbPFB1KK/3Zc4pwqk3vWS1fw/aYUZqRFta+lY61H7YdyOyjYi8durrsLjZIBNBwoD28sQQ==}
     peerDependencies:
-      '@effect/platform': ^0.57.4
-      effect: ^3.3.5
+      '@effect/platform': ^0.58.2
+      effect: ^3.4.0
     dependencies:
-      '@effect/platform': 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
-      '@effect/platform-node-shared': 0.6.13(@effect/platform@0.57.4)(effect@3.3.5)
-      effect: 3.3.5
+      '@effect/platform': 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
+      '@effect/platform-node-shared': 0.8.1(@effect/platform@0.58.2)(effect@3.4.0)
+      effect: 3.4.0
       mime: 3.0.0
       undici: 6.19.2
       ws: 8.17.1
@@ -2245,65 +2245,65 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@effect/platform@0.57.4(@effect/schema@0.68.1)(effect@3.3.5):
-    resolution: {integrity: sha512-2ulqg18wJx0pBbVph/PNcFWas85gzPZACNCDvT6Ysl/sWbdmXaOqeHS7ytIlYYRRMGenagv7XOR7UFOAf4xOig==}
+  /@effect/platform@0.58.2(@effect/schema@0.68.5)(effect@3.4.0):
+    resolution: {integrity: sha512-Z+ClK2QcfvbefUhhnhUVse3ZZfTgBjTgNm5Q8FAr1PFpS+SSCcNSMeXs6R2uzBHbm1cQgRmLrisDVuPeSTP5fw==}
     peerDependencies:
-      '@effect/schema': ^0.68.1
-      effect: ^3.3.5
+      '@effect/schema': ^0.68.5
+      effect: ^3.4.0
     dependencies:
-      '@effect/schema': 0.68.1(effect@3.3.5)
-      effect: 3.3.5
+      '@effect/schema': 0.68.5(effect@3.4.0)
+      effect: 3.4.0
       find-my-way-ts: 0.1.4
       multipasta: 0.2.2
       path-browserify: 1.0.1
     dev: false
 
-  /@effect/schema@0.68.1(effect@3.3.5):
-    resolution: {integrity: sha512-wUxqHyNmwsjjUgborcBcOHAv5k1BFq9S43NGMcvDeAQOBB2ad5+bLbWxl0zAFj7Hq3V2laTj45UD9L5YQGmg/w==}
+  /@effect/schema@0.68.5(effect@3.4.0):
+    resolution: {integrity: sha512-oi42ZVFEsPsCdmBCyM2+MG+SMcB2uG5xyYFMseMCLiw2C5l2kEp7/8pCN1J69391a9magb3KlnlSGxbmgbvkAw==}
     peerDependencies:
-      effect: ^3.3.5
+      effect: ^3.4.0
     dependencies:
-      effect: 3.3.5
+      effect: 3.4.0
       fast-check: 3.19.0
     dev: false
 
-  /@effect/sql-drizzle@0.1.6(@effect/sql@0.3.14)(drizzle-orm@0.31.2)(effect@3.3.5):
-    resolution: {integrity: sha512-PIZmkpH00X548+i1kaF+2sBhSl2+r9SR1tQvC86yar9u0rJoteRKolameAHw2az67Kp4YMfd3BqHdX5+wJSJDg==}
+  /@effect/sql-drizzle@0.2.2(@effect/sql@0.4.2)(drizzle-orm@0.31.2)(effect@3.4.0):
+    resolution: {integrity: sha512-0LgNDHVTSJ4EyDhb7OmWn6ZesZVcNxSOfY3ofycoWnF23BTR+iXuapKhnqZ7WjYpGSXFZ6vJP8IQS5Uvl4D6DQ==}
     peerDependencies:
-      '@effect/sql': ^0.3.14
+      '@effect/sql': ^0.4.2
       drizzle-orm: ^0.30.10
-      effect: ^3.3.5
+      effect: ^3.4.0
     dependencies:
-      '@effect/sql': 0.3.14(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
+      '@effect/sql': 0.4.2(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0)
       drizzle-orm: 0.31.2(@opentelemetry/api@1.9.0)(@types/react@18.2.79)(react@18.2.0)
-      effect: 3.3.5
+      effect: 3.4.0
     dev: false
 
-  /@effect/sql-sqlite-node@0.3.15(@effect/platform@0.57.4)(@effect/sql@0.3.14)(effect@3.3.5):
-    resolution: {integrity: sha512-ImX0Xr/mSmAT4uah9PFkv00FvcdgjzPbEd0dx+lNkP5r7a59Q0cFveZBx9I6e6ddtTB7c9RA+XE/aPSpHvz++A==}
+  /@effect/sql-sqlite-node@0.4.2(@effect/platform@0.58.2)(@effect/sql@0.4.2)(effect@3.4.0):
+    resolution: {integrity: sha512-DtAGyRPxLbDsGSr2wwCfbGFsX+C0FjYNCa47AG3Q/CUTiVSe0HNEYC0UKsJZ3I49jea+n3+jmCjR30ZT3VgwLA==}
     peerDependencies:
-      '@effect/platform': ^0.57.4
-      '@effect/sql': ^0.3.14
-      effect: ^3.3.5
+      '@effect/platform': ^0.58.2
+      '@effect/sql': ^0.4.2
+      effect: ^3.4.0
     dependencies:
-      '@effect/platform': 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
-      '@effect/sql': 0.3.14(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
+      '@effect/platform': 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
+      '@effect/sql': 0.4.2(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0)
       '@opentelemetry/semantic-conventions': 1.25.1
       better-sqlite3: 11.0.0
-      effect: 3.3.5
+      effect: 3.4.0
     dev: false
 
-  /@effect/sql@0.3.14(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5):
-    resolution: {integrity: sha512-Hmby11WxMwI1qBJiHeKQDP2RbT0XCaEI1PzgqyeTsnhCL2KVudVz4DVxaWyP6LxgvnEOR/aEkUeP/OOsLJZmiw==}
+  /@effect/sql@0.4.2(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0):
+    resolution: {integrity: sha512-SMsfKCiIdomTMhjV/mP/ovzX2WehfjJ7VN4aFjCb1tEfcOY4V3myFO2DXM/eZT2LtF9lSiGKsxFtAsL7TGgrbw==}
     peerDependencies:
-      '@effect/platform': ^0.57.4
-      '@effect/schema': ^0.68.1
-      effect: ^3.3.5
+      '@effect/platform': ^0.58.2
+      '@effect/schema': ^0.68.5
+      effect: ^3.4.0
     dependencies:
-      '@effect/platform': 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
-      '@effect/schema': 0.68.1(effect@3.3.5)
+      '@effect/platform': 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
+      '@effect/schema': 0.68.5(effect@3.4.0)
       '@opentelemetry/semantic-conventions': 1.25.1
-      effect: 3.3.5
+      effect: 3.4.0
     dev: false
 
   /@emotion/is-prop-valid@0.8.8:
@@ -10094,66 +10094,66 @@ packages:
   /ee-first@1.1.1:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
 
-  /effect-http-error@0.2.0(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5):
-    resolution: {integrity: sha512-b5OR+EMtUhgaYhYWWe5WS5N3dGonno2uXd2T4u0UjGzafnA3MDxti4aPtPkB3I5kUtft3IKiU2UOaANCyF3Zsg==}
+  /effect-http-error@0.3.0(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0):
+    resolution: {integrity: sha512-6wZJsn0mIIShxeaME/zDXM5AVlkIT7XNGR0xjwM5UhbX6fOQGYCg0C556DrXWhZnrc2D/xxZgfVtZ7fScImDkQ==}
     peerDependencies:
-      '@effect/platform': ^0.57.0
+      '@effect/platform': ^0.58.0
       '@effect/schema': ^0.68.0
-      effect: ^3.3.0
+      effect: ^3.4.0
     dependencies:
-      '@effect/platform': 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
-      '@effect/schema': 0.68.1(effect@3.3.5)
-      effect: 3.3.5
+      '@effect/platform': 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
+      '@effect/schema': 0.68.5(effect@3.4.0)
+      effect: 3.4.0
     dev: false
 
-  /effect-http-node@0.14.0(@effect/platform-node@0.51.13)(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect-http@0.69.0)(effect@3.3.5):
-    resolution: {integrity: sha512-SWmNk4OBkewiVNZQjbe8jE45oAOg8iHRqm47buq4cgDAShsRTGGjGdVMg7J5YM8LiFmXl4EafGGAimkKga/woA==}
+  /effect-http-node@0.15.0(@effect/platform-node@0.53.1)(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect-http@0.70.0)(effect@3.4.0):
+    resolution: {integrity: sha512-guBwSmRTyikDZSqi1IuaORuauHjApF7RDf24C5HAygbYWg0+exsMAjSyOZS4Y7yqFTLeI8iQFdnEEa82TGZ9sw==}
     peerDependencies:
-      '@effect/platform': ^0.57.0
-      '@effect/platform-node': ^0.51.0
+      '@effect/platform': ^0.58.0
+      '@effect/platform-node': ^0.53.0
       '@effect/schema': ^0.68.0
-      effect: ^3.3.0
-      effect-http: ^0.69.0
+      effect: ^3.4.0
+      effect-http: ^0.70.0
     dependencies:
-      '@effect/platform': 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
-      '@effect/platform-node': 0.51.13(@effect/platform@0.57.4)(effect@3.3.5)
-      '@effect/schema': 0.68.1(effect@3.3.5)
-      effect: 3.3.5
-      effect-http: 0.69.0(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
+      '@effect/platform': 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
+      '@effect/platform-node': 0.53.1(@effect/platform@0.58.2)(effect@3.4.0)
+      '@effect/schema': 0.68.5(effect@3.4.0)
+      effect: 3.4.0
+      effect-http: 0.70.0(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0)
       swagger-ui-dist: 5.17.14
     dev: false
 
-  /effect-http-security@0.2.0(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect-http-error@0.2.0)(effect@3.3.5):
-    resolution: {integrity: sha512-RgA1Tq4/P4nMCzJ/YbOsb5yIDuuqOaXq68q65mPJ+uf8BiPTeze+qSdaJxvHXbp79ZVDnWqlHB9wUxkTABMLdQ==}
+  /effect-http-security@0.3.0(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect-http-error@0.3.0)(effect@3.4.0):
+    resolution: {integrity: sha512-aB8O5wwAiIpdOOSxePClwnKS8RiOGn9e8Ih3pAUHkwi1onNrqtfoAYgC74sTy8qdCZHlfaN6mIhG9A5vpM1NkQ==}
     peerDependencies:
-      '@effect/platform': ^0.57.0
+      '@effect/platform': ^0.58.0
       '@effect/schema': ^0.68.0
-      effect: ^3.3.0
-      effect-http-error: ^0.2.0
+      effect: ^3.4.0
+      effect-http-error: ^0.3.0
     dependencies:
-      '@effect/platform': 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
-      '@effect/schema': 0.68.1(effect@3.3.5)
-      effect: 3.3.5
-      effect-http-error: 0.2.0(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
+      '@effect/platform': 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
+      '@effect/schema': 0.68.5(effect@3.4.0)
+      effect: 3.4.0
+      effect-http-error: 0.3.0(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0)
     dev: false
 
-  /effect-http@0.69.0(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5):
-    resolution: {integrity: sha512-f7dFgHVoHpGG3oSt8XtdGpNonpSyut7b0J0lEgyhnRnKj8mNct4T+pTvaB+CvSOKuzqSW5khQEehYJ4DCx+SzA==}
+  /effect-http@0.70.0(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0):
+    resolution: {integrity: sha512-PNZs7G43wdIk8mRReccU4b+ieUtqQlRSbuX6IIB+xWDkE7kGpI/UbhlVIKsAfhXw64fLCiuOB0VXsjP0gqyZgQ==}
     peerDependencies:
-      '@effect/platform': ^0.57.0
+      '@effect/platform': ^0.58.0
       '@effect/schema': ^0.68.0
-      effect: ^3.3.0
+      effect: ^3.4.0
     dependencies:
-      '@effect/platform': 0.57.4(@effect/schema@0.68.1)(effect@3.3.5)
-      '@effect/schema': 0.68.1(effect@3.3.5)
-      effect: 3.3.5
-      effect-http-error: 0.2.0(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect@3.3.5)
-      effect-http-security: 0.2.0(@effect/platform@0.57.4)(@effect/schema@0.68.1)(effect-http-error@0.2.0)(effect@3.3.5)
-      schema-openapi: 0.39.0(@effect/schema@0.68.1)(effect@3.3.5)
+      '@effect/platform': 0.58.2(@effect/schema@0.68.5)(effect@3.4.0)
+      '@effect/schema': 0.68.5(effect@3.4.0)
+      effect: 3.4.0
+      effect-http-error: 0.3.0(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect@3.4.0)
+      effect-http-security: 0.3.0(@effect/platform@0.58.2)(@effect/schema@0.68.5)(effect-http-error@0.3.0)(effect@3.4.0)
+      schema-openapi: 0.39.1(@effect/schema@0.68.5)(effect@3.4.0)
     dev: false
 
-  /effect@3.3.5:
-    resolution: {integrity: sha512-ehDpb+3zRTYsCqDWY32rT4oxtG0BJ797+HSog+FPjiWKjNxnPgpslUIQha8CoxqFZln2ZeBRv00tzGIhUAQKsw==}
+  /effect@3.4.0:
+    resolution: {integrity: sha512-dBufbmIyeOi8Wog8kJUrpCIvVs/GcGMimtd6JIXhRIKdRLrVho9og/28sJmKjxHM+PG9Bn3t9XehcM3YfCB8og==}
     dev: false
 
   /ejs@3.1.10:
@@ -16295,14 +16295,14 @@ packages:
     dependencies:
       loose-envify: 1.4.0
 
-  /schema-openapi@0.39.0(@effect/schema@0.68.1)(effect@3.3.5):
-    resolution: {integrity: sha512-p38lJ0Y2BzWdFMq/GwDZU2GDq6GKpL+4MS09bCeslf2KfwkSaZexbpdXko1O/0gkJeOR9OFU/W0GNISmslKYPw==}
+  /schema-openapi@0.39.1(@effect/schema@0.68.5)(effect@3.4.0):
+    resolution: {integrity: sha512-VpgewDR0ltlQ6VGC7V2gsLUM39+ottjhuc6/AR2hW+XTgUYL3LcobVHsxOYhkBnuMm0Gs5eaSH8qU9aLFMPxxQ==}
     peerDependencies:
       '@effect/schema': ^0.68.0
-      effect: ^3.3.0
+      effect: ^3.4.0
     dependencies:
-      '@effect/schema': 0.68.1(effect@3.3.5)
-      effect: 3.3.5
+      '@effect/schema': 0.68.5(effect@3.4.0)
+      effect: 3.4.0
     dev: false
 
   /schema-utils@3.3.0:

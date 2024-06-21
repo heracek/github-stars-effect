@@ -1,7 +1,6 @@
 import { Context, Effect, Layer } from 'effect';
-import * as Client from '@effect/sql/Client';
-import * as Sqlite from '@effect/sql-sqlite-node';
-import { SqliteClient } from '@effect/sql-sqlite-node/Client';
+import { SqlClient } from '@effect/sql';
+import { SqliteClient } from '@effect/sql-sqlite-node';
 
 import { AppConfig } from './AppConfig';
 
@@ -11,12 +10,12 @@ export const SqliteClientLive = Layer.scopedContext(
 
     yield* Effect.log('SqliteClientLive', dbFilename);
 
-    const client = yield* Sqlite.client.make({
+    const client = yield* SqliteClient.make({
       filename: dbFilename,
     });
 
-    return Context.make(SqliteClient, client).pipe(
-      Context.add(Client.Client, client),
+    return Context.make(SqliteClient.SqliteClient, client).pipe(
+      Context.add(SqlClient.SqlClient, client),
     );
   }),
 );

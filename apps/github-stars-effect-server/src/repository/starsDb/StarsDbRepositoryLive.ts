@@ -1,6 +1,6 @@
-import { Array, Console, Effect, flow, Layer } from 'effect';
+import { Array, Effect, flow, Layer } from 'effect';
 import * as S from '@effect/schema/Schema';
-import * as Sql from '@effect/sql';
+import { SqlResolver, SqlSchema } from '@effect/sql';
 import * as D from 'drizzle-orm';
 
 import * as dbSchema from '../../db/schema';
@@ -16,7 +16,7 @@ export const StarsDbRepositoryLive = Layer.effect(
   Effect.gen(function* () {
     const db = yield* SqliteDrizzle;
 
-    const InsertOrUpdateStarredRepo = yield* Sql.resolver.ordered(
+    const InsertOrUpdateStarredRepo = yield* SqlResolver.ordered(
       'InsertOrUpdateStarredRepo',
       {
         Request: StarsDbRepositoryStarredRepoSchema,
@@ -34,7 +34,7 @@ export const StarsDbRepositoryLive = Layer.effect(
       Effect.withRequestBatching(true),
     );
 
-    const fullTextSearch = Sql.schema.findAll({
+    const fullTextSearch = SqlSchema.findAll({
       Request: S.String,
       Result: StarsDbRepositoryStarredRepoSchema,
       execute: (fullText) =>
