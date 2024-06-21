@@ -15,7 +15,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Link, router, Stack, useLocalSearchParams } from 'expo-router';
 import { Input, Label, Spinner, Text, View, XStack, YStack } from 'tamagui';
 
-import { GetStarsResponse } from '@crfx/github-stars-shared-schema';
+import { GetStarsResponseSchema } from '@crfx/github-stars-shared-schema';
 
 import { EmptyView } from '../ui/EmptyView';
 import { ErrorView } from '../ui/ErrorView';
@@ -39,7 +39,7 @@ async function fetchStars({
 
   const jsonResponse = await (await fetch(url, { signal })).json();
 
-  return pipe(jsonResponse, S.decodeUnknownSync(GetStarsResponse));
+  return pipe(jsonResponse, S.decodeUnknownSync(GetStarsResponseSchema));
 }
 
 export function SearchStarsScreen() {

@@ -1,25 +1,26 @@
 import * as S from '@effect/schema/Schema';
 
-export class RepositoryOwner extends S.Class<RepositoryOwner>(
-  'RepositoryOwner',
-)({
+export const RepositoryOwnerSchema = S.Struct({
   id: S.Number,
   login: S.String,
-}) {}
+});
+export type RepositoryOwner = typeof RepositoryOwnerSchema.Type;
 
-export class StarredRepo extends S.Class<StarredRepo>('StarredRepo')({
+export const StarredRepoSchema = S.Struct({
   id: S.Number,
   starred_at: S.Date,
   name: S.String,
   full_name: S.String,
-  owner: RepositoryOwner,
+  owner: RepositoryOwnerSchema,
   html_url: S.String,
   language: S.String.pipe(S.NullOr),
   description: S.String.pipe(S.NullOr),
   topics: S.Array(S.String),
-}) {}
-
-export const GetStarsResponse = S.Struct({
-  error: S.String.pipe(S.NullOr),
-  results: S.Array(StarredRepo),
 });
+export type StarredRepo = typeof StarredRepoSchema.Type;
+
+export const GetStarsResponseSchema = S.Struct({
+  error: S.String.pipe(S.NullOr),
+  results: S.Array(StarredRepoSchema),
+});
+export type GetStarsResponse = typeof GetStarsResponseSchema.Type;

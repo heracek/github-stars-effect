@@ -1,19 +1,20 @@
 import * as S from '@effect/schema/Schema';
 
-class InputOwner extends S.Class<InputOwner>('InputOwner')({
+export const InputOwnerSchema = S.Struct({
   id: S.Number,
   login: S.String,
   html_url: S.String,
   avatar_url: S.String,
-}) {}
+});
+export type InputOwner = typeof InputOwnerSchema.Type;
 
-class ResponseRepoInput extends S.Class<ResponseRepoInput>('RepoWithOwnerId')({
+export const ResponseRepoSchema = S.Struct({
   id: S.Number,
   name: S.String,
   full_name: S.String,
   html_url: S.String,
   description: S.String.pipe(S.NullOr),
-  owner: InputOwner,
+  owner: InputOwnerSchema,
   created_at: S.Date,
   updated_at: S.Date,
   pushed_at: S.Date,
@@ -32,6 +33,5 @@ class ResponseRepoInput extends S.Class<ResponseRepoInput>('RepoWithOwnerId')({
   defaultBranch: S.propertySignature(S.String).pipe(
     S.fromKey('default_branch'),
   ),
-}) {}
-
-export const ResponseRepo = ResponseRepoInput;
+});
+export type ResponseRepo = typeof ResponseRepoSchema.Type;

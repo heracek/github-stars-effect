@@ -9,7 +9,7 @@ import { AppConfig, AppConfigLive } from './layers/AppConfig';
 import { OpenTelemetryService } from './layers/OpenTelemetryService';
 import { SqliteClientLive } from './layers/SqliteClient';
 import { SqliteDrizzleLive } from './layers/SqliteDrizzle';
-import { GithubApiRepositoryLive } from './repository/GithubApiRepository';
+import { GithubApiRepositoryLive } from './repository/githubApi/GithubApiRepositoryLive';
 import { StarsDbRepositoryLive } from './repository/starsDb/StarsDbRepositoryLive';
 
 const liveApp = pipe(

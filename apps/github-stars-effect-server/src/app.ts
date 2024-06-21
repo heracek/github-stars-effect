@@ -1,14 +1,11 @@
-import { Array, Effect, pipe, Redacted } from 'effect';
+import { Array, Effect, pipe } from 'effect';
 import { Api, HttpError, Middlewares, RouterBuilder } from 'effect-http';
-import { HttpClient } from '@effect/platform';
 import * as S from '@effect/schema/Schema';
 
-import { GetStarsResponse } from '@crfx/github-stars-shared-schema';
+import { GetStarsResponseSchema } from '@crfx/github-stars-shared-schema';
 
-import { AppConfig } from './layers/AppConfig';
-import { GithubApiRepository } from './repository/GithubApiRepository';
+import { GithubApiRepository } from './repository/githubApi/GithubApiRepository';
 import { StarsDbRepository } from './repository/starsDb/StarsDbRepository';
-import { ResponseStar } from './schemas/ResponseStar';
 
 const appError = (message: string) =>
   Effect.mapError((e: Error) =>
@@ -23,12 +20,8 @@ export const noteApi = pipe(
   Api.addEndpoint(
     pipe(
       Api.get('getStars', '/stars'),
-      Api.setRequestQuery(
-        S.Struct({
-          q: S.String,
-        }),
-      ),
-      Api.setResponseBody(GetStarsResponse),
+      Api.setRequestQuery(S.Struct({ q: S.String })),
+      Api.setResponseBody(GetStarsResponseSchema),
     ),
   ),
   Api.addEndpoint(

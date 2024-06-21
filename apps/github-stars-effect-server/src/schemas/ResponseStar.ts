@@ -1,8 +1,8 @@
 import * as S from '@effect/schema/Schema';
 
-import { ResponseRepo } from './ResponseRepo';
+import { ResponseRepoSchema } from './ResponseRepo';
 
 export const ResponseStar = S.Struct({
   starred_at: S.Date,
-  repo: ResponseRepo,
+  repo: ResponseRepoSchema,
 }).pipe(S.annotations({ identifier: 'ResponseStar' }));

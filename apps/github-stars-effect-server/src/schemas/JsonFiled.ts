@@ -2,7 +2,7 @@ import { Effect, pipe } from 'effect';
 import { ParseResult } from '@effect/schema';
 import * as S from '@effect/schema/Schema';
 
-/** Transforms string JSON field to given `outSchema` */
+/** Transforms JSON string field to given `outSchema` */
 export const JsonFiled = <A>(outSchema: S.Schema<A>) =>
   pipe(
     S.String,

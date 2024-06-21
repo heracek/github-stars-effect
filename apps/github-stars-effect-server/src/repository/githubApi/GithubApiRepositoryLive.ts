@@ -1,24 +1,13 @@
-import { Context, Effect, Layer, pipe, Redacted } from 'effect';
+import { Effect, Layer, pipe, Redacted } from 'effect';
 import {
   HttpClient,
   HttpClientRequest,
   HttpClientResponse,
 } from '@effect/platform';
-import * as S from '@effect/schema/Schema';
 
-import { AppConfig } from '../layers/AppConfig';
-import { ResponseStar } from '../schemas/ResponseStar';
-
-const ResponseStarred = S.Array(ResponseStar);
-
-export class GithubApiRepository extends Context.Tag('GithubApiRepository')<
-  GithubApiRepository,
-  {
-    getStarred: (options: {
-      page: number;
-    }) => Effect.Effect<typeof ResponseStarred.Type>;
-  }
->() {}
+import { AppConfig } from '../../layers/AppConfig';
+import { GithubApiRepository } from './GithubApiRepository';
+import { ResponseStarredSchema } from './schema';
 
 export const GithubApiRepositoryLive = Layer.effect(
   GithubApiRepository,
@@ -34,7 +23,9 @@ export const GithubApiRepositoryLive = Layer.effect(
         HttpClientRequest.bearerToken(Redacted.value(githubToken)),
         HttpClientRequest.setUrlParams({ per_page: '100', page: `${page}` }),
         HttpClient.fetchOk,
-        Effect.andThen(HttpClientResponse.schemaBodyJson(ResponseStarred)),
+        Effect.andThen(
+          HttpClientResponse.schemaBodyJson(ResponseStarredSchema),
+        ),
         Effect.orDie,
         Effect.scoped,
         Effect.withSpan('GithubRepository.getStarred', {
