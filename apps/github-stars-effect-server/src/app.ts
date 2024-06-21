@@ -1,10 +1,11 @@
-import { Array, Config, Effect, pipe, Secret } from 'effect';
+import { Array, Config, Effect, pipe, Redacted } from 'effect';
 import { Api, HttpError, Middlewares, RouterBuilder } from 'effect-http';
 import { HttpClient } from '@effect/platform';
 import * as S from '@effect/schema/Schema';
 
 import { GetStarsResponse } from '@crfx/github-stars-shared-schema';
 
+import { AppConfig } from './layers/AppConfig';
 import { makeStarsDbRepository } from './repository/starsDbRepository';
 import { ResponseStar } from './schemas/ResponseStar';
 
@@ -49,10 +50,7 @@ export const noteApi = pipe(
 
 const makeGithubRepository = () =>
   Effect.gen(function* makeGithubRepository() {
-    const githubToken = yield* pipe(
-      Config.secret('GITHUB_TOKEN'),
-      Effect.orDie,
-    );
+    const { githubToken } = yield* AppConfig;
 
     const getStarred = ({ page }: { page: number }) =>
       pipe(
@@ -60,7 +58,7 @@ const makeGithubRepository = () =>
         HttpClient.request.setHeaders({
           Accept: 'application/vnd.github.v3.star+json',
         }),
-        HttpClient.request.bearerToken(Secret.value(githubToken)),
+        HttpClient.request.bearerToken(Redacted.value(githubToken)),
         HttpClient.request.setUrlParams({ per_page: '100', page: `${page}` }),
         HttpClient.client.fetchOk,
         Effect.andThen(HttpClient.response.schemaBodyJson(ResponseStarred)),

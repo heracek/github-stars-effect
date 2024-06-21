@@ -39,10 +39,7 @@ async function fetchStars({
 
   const jsonResponse = await (await fetch(url, { signal })).json();
 
-  return pipe(
-    jsonResponse,
-    S.decodeUnknownSync(GetStarsResponse),
-  );
+  return pipe(jsonResponse, S.decodeUnknownSync(GetStarsResponse));
 }
 
 export function SearchStarsScreen() {

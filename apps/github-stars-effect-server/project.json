@@ -53,6 +53,9 @@
         }
       }
     },
+    "drizzle-kit": {
+      "command": "drizzle-kit --config ./apps/github-stars-effect-server/drizzle.config.ts"
+    },
     "docker-build": {
       "dependsOn": ["build"],
       "command": "docker build -f apps/github-stars-effect-server/Dockerfile . -t github-stars-effect-server"

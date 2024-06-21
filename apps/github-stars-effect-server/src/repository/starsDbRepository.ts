@@ -1,79 +1,12 @@
-import { Effect, flow, pipe } from 'effect';
+import { Array, Effect, flow, pipe } from 'effect';
 import { ParseResult } from '@effect/schema';
 import * as S from '@effect/schema/Schema';
 import * as Sql from '@effect/sql';
-import { sql as drizzleSql } from 'drizzle-orm';
-import * as D from 'drizzle-orm/sqlite-core';
+import * as D from 'drizzle-orm';
 
+import * as dbSchema from '../db/schema';
 import { SqlClient } from '../layers/SqliteClient';
 import { SqliteDrizzle } from '../layers/SqliteDrizzle';
-
-const starredRepo = D.sqliteTable('starred_repo', {
-  id: D.integer('id').primaryKey(),
-  starred_at: D.text('starred_at').notNull(),
-  name: D.text('name').notNull(),
-  full_name: D.text('').notNull(),
-  owner: D.text('').notNull(),
-  html_url: D.text('').notNull(),
-  language: D.text(''),
-  description: D.text(''),
-  topics: D.text(''),
-});
-
-export const tryInitiateStarsDbRepository = () =>
-  Effect.gen(function* tryInitiateStarsDbRepository() {
-    const sql = yield* SqlClient;
-
-    yield* sql`CREATE TABLE IF NOT EXISTS starred_repo (
-          id INTEGER PRIMARY KEY,
-          starred_at DATE,
-          name TEXT,
-          full_name TEXT,
-          owner TEXT,
-          html_url TEXT,
-          language TEXT NULL,
-          description TEXT NULL,
-          topics TEXT
-        )`;
-
-    // See: https://sqlite.org/fts5.html#external_content_tables
-    yield* sql`CREATE VIRTUAL TABLE IF NOT EXISTS starred_repo_idx
-          USING fts5(
-            name,
-            fullName,
-            owner,
-            language,
-            description,
-            topics,
-            content='tbl',
-            content_rowid='starred_repo',
-            tokenize="trigram remove_diacritics 1"
-          )
-        `;
-
-    yield* sql`CREATE TRIGGER IF NOT EXISTS starred_repo_ai
-          AFTER INSERT ON starred_repo
-          BEGIN
-            INSERT INTO starred_repo_idx(
-              rowid,
-              name,
-              fullName,
-              owner,
-              language,
-              description,
-              topics
-            ) VALUES (
-              new.id,
-              new.name,
-              new.full_name,
-              json_extract(new.owner, '$.login'),
-              new.language,
-              new.description,
-              new.topics
-            );
-          END
-        `;
-  });
 
 class RepositoryOwner extends S.Class<RepositoryOwner>('RepositoryOwner')({
   id: S.Number,
@@ -120,7 +53,6 @@ export class RepositoryStarredRepo extends S.Class<RepositoryStarredRepo>(
 
 export const makeStarsDbRepository = () =>
   Effect.gen(function* makeStarsDbRepository() {
-    yield* tryInitiateStarsDbRepository();
     const sql = yield* SqlClient;
     const db = yield* SqliteDrizzle;
 
@@ -142,8 +74,8 @@ export const makeStarsDbRepository = () =>
       execute: (id) =>
         db
           .select()
-          .from(starredRepo)
-          .where(drizzleSql`${starredRepo.id} = ${id}`),
+          .from(dbSchema.starredRepo)
+          .where(D.eq(dbSchema.starredRepo.id, id)),
     });
 
     const fullTextSearch = Sql.schema.findAll({
