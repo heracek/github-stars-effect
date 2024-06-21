@@ -32,10 +32,6 @@ class ResponseRepoInput extends S.Class<ResponseRepoInput>('RepoWithOwnerId')({
   defaultBranch: S.propertySignature(S.String).pipe(
     S.fromKey('default_branch'),
   ),
-}) {
-  get ownerId() {
-    return this.owner.id;
-  }
-}
+}) {}
 
 export const ResponseRepo = ResponseRepoInput;

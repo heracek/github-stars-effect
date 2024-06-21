@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -194,15 +194,12 @@ export function SearchStarsScreen() {
               >
                 {repo.language ? (
                   <View>
-                    {/* <Tag theme="green_alt2" ellipse ellipsizeMode="tail"> */}
                     <HighlightedText
                       searchWords={searchWords}
                       textToHighlight={repo.language}
                       fontWeight="800"
                       fontSize="$2"
-                      // textToHighlight={'react kldsjflksdjflksdjf '}
                     />
-                    {/* </Tag> */}
                   </View>
                 ) : null}
 

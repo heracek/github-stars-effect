@@ -9,6 +9,8 @@ import { AppConfig, AppConfigLive } from './layers/AppConfig';
 import { OpenTelemetryService } from './layers/OpenTelemetryService';
 import { SqliteClientLive } from './layers/SqliteClient';
 import { SqliteDrizzleLive } from './layers/SqliteDrizzle';
+import { GithubApiRepositoryLive } from './repository/GithubApiRepository';
+import { StarsDbRepositoryLive } from './repository/starsDb/StarsDbRepositoryLive';
 
 const liveApp = pipe(
   Effect.gen(function* () {
@@ -16,6 +18,8 @@ const liveApp = pipe(
 
     yield* pipe(app, Effect.flatMap(NodeServer.listen({ port })));
   }),
+  Effect.provide(GithubApiRepositoryLive),
+  Effect.provide(StarsDbRepositoryLive),
   Effect.provide(SqliteDrizzleLive),
   Effect.provide(SqliteClientLive),
   Effect.provide(OpenTelemetryService),

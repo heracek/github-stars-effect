@@ -1,4 +1,4 @@
-import { Array, Config, Effect, pipe, Redacted } from 'effect';
+import { Array, Effect, pipe, Redacted } from 'effect';
 import { Api, HttpError, Middlewares, RouterBuilder } from 'effect-http';
 import { HttpClient } from '@effect/platform';
 import * as S from '@effect/schema/Schema';
@@ -6,7 +6,8 @@ import * as S from '@effect/schema/Schema';
 import { GetStarsResponse } from '@crfx/github-stars-shared-schema';
 
 import { AppConfig } from './layers/AppConfig';
-import { makeStarsDbRepository } from './repository/starsDbRepository';
+import { GithubApiRepository } from './repository/GithubApiRepository';
+import { StarsDbRepository } from './repository/starsDb/StarsDbRepository';
 import { ResponseStar } from './schemas/ResponseStar';
 
 const appError = (message: string) =>
@@ -16,8 +17,6 @@ const appError = (message: string) =>
       details: e.message,
     }),
   );
-
-const ResponseStarred = S.Array(ResponseStar);
 
 export const noteApi = pipe(
   Api.make({ title: 'GitHub Stars Effect API' }),
@@ -48,37 +47,11 @@ export const noteApi = pipe(
   ),
 );
 
-const makeGithubRepository = () =>
-  Effect.gen(function* makeGithubRepository() {
-    const { githubToken } = yield* AppConfig;
-
-    const getStarred = ({ page }: { page: number }) =>
-      pipe(
-        HttpClient.request.get('https://api.github.com/user/starred'),
-        HttpClient.request.setHeaders({
-          Accept: 'application/vnd.github.v3.star+json',
-        }),
-        HttpClient.request.bearerToken(Redacted.value(githubToken)),
-        HttpClient.request.setUrlParams({ per_page: '100', page: `${page}` }),
-        HttpClient.client.fetchOk,
-        Effect.andThen(HttpClient.response.schemaBodyJson(ResponseStarred)),
-        Effect.orDie,
-        Effect.scoped,
-        Effect.withSpan('GithubRepository.getStarred', {
-          attributes: { page },
-        }),
-      );
-
-    return { getStarred };
-  });
-
 export const app = Effect.gen(function* () {
-  const repository = yield* makeStarsDbRepository();
-  const githubRepository = yield* makeGithubRepository();
-
   return RouterBuilder.make(noteApi).pipe(
     RouterBuilder.handle('getStars', ({ query }) =>
       Effect.gen(function* () {
+        const repository = yield* StarsDbRepository;
         const results = yield* repository.fullTextSearch(query.q);
         return {
           results,
@@ -91,6 +64,9 @@ export const app = Effect.gen(function* () {
         let page = 1;
 
         while (true) {
+          const repository = yield* StarsDbRepository;
+          const githubRepository = yield* GithubApiRepository;
+
           const response = yield* githubRepository.getStarred({ page });
           yield* Effect.log(`page ${page} - length: ${response.length}`);
 

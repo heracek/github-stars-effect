@@ -5,10 +5,6 @@ import { SqliteClient } from '@effect/sql-sqlite-node/Client';
 
 import { AppConfig } from './AppConfig';
 
-export { SqliteClient };
-
-export const SqlClient = Client.Client;
-
 export const SqliteClientLive = Layer.scopedContext(
   Effect.gen(function* () {
     const { dbFilename } = yield* AppConfig;
