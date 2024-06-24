@@ -1,26 +1,25 @@
-import { Context, type Effect } from 'effect';
-import { type ParseResult } from '@effect/schema';
-import { type SqlError } from '@effect/sql';
+import { Context, Data, type Effect } from 'effect';
 
 import {
   type StarsDbRepositoryInsertResult,
   type StarsDbRepositoryStarredRepo,
 } from './schema';
 
+export class StarsDbRepositoryError extends Data.TaggedError(
+  'StarsDbRepositoryError',
+)<{ message: string }> {}
+
 export class StarsDbRepository extends Context.Tag('StarsDbRepository')<
   StarsDbRepository,
   {
     insertOrUpdateStarredRepo: (
       input: StarsDbRepositoryStarredRepo,
-    ) => Effect.Effect<
-      StarsDbRepositoryInsertResult,
-      ParseResult.ParseError | SqlError.ResultLengthMismatch | SqlError.SqlError
-    >;
+    ) => Effect.Effect<StarsDbRepositoryInsertResult, StarsDbRepositoryError>;
     fullTextSearch: (
       fullText: string,
     ) => Effect.Effect<
       ReadonlyArray<StarsDbRepositoryStarredRepo>,
-      ParseResult.ParseError | SqlError.ResultLengthMismatch | SqlError.SqlError
+      StarsDbRepositoryError
     >;
   }
 >() {}

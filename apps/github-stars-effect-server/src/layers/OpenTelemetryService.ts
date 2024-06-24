@@ -15,7 +15,7 @@ export const OpenTelemetryService = NodeSdk.layer(() => ({
       ? new OTLPTraceExporter()
       : new ConsoleSpanExporter(),
   ),
-  // metricReader: ENABLE_DOCKER_TELEMETRY
-  //   ? new PrometheusExporter({ port: 9090 }, console.error)
-  //   : undefined,
+  metricReader: ENABLE_DOCKER_TELEMETRY
+    ? new PrometheusExporter({ port: 9464 }, console.error)
+    : undefined,
 }));

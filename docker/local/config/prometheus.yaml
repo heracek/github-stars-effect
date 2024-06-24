@@ -3,6 +3,11 @@ global:
   scrape_interval: 15s
   evaluation_interval: 15s
 scrape_configs:
+  - job_name: github-stars-effect-server
+    scrape_interval: 1s
+    static_configs:
+      - targets:
+          - host.docker.internal:9464
   - job_name: prometheus
     static_configs:
       - targets:

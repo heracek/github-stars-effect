@@ -1,4 +1,4 @@
-import { Array, Effect, pipe } from 'effect';
+import { Array, Chunk, Effect, pipe } from 'effect';
 import { Api, HttpError, Middlewares, RouterBuilder } from 'effect-http';
 import * as S from '@effect/schema/Schema';
 
@@ -11,11 +11,11 @@ const appError = (message: string) =>
   Effect.mapError((e: Error) =>
     HttpError.make(500, {
       message,
-      details: e.message,
+      details: `${e}`,
     }),
   );
 
-export const noteApi = pipe(
+export const publicApi = pipe(
   Api.make({ title: 'GitHub Stars Effect API' }),
   Api.addEndpoint(
     pipe(
@@ -26,66 +26,86 @@ export const noteApi = pipe(
   ),
   Api.addEndpoint(
     pipe(
-      Api.get('getTest', '/test'),
-      Api.setResponseBody(
-        S.Any,
-        // ResponseStarred.pipe(
-        //   S.annotations({
-        //     description: 'ResponseStarred',
-        //   }),
-        // ),
-      ),
-      // Api.setResponseRepresentations([{ stringify: S.validate }]),
+      Api.post('refreshStars', '/refresh-stars'),
+      Api.setResponseBody(S.String),
     ),
   ),
 );
 
-export const app = Effect.gen(function* () {
-  return RouterBuilder.make(noteApi).pipe(
-    RouterBuilder.handle('getStars', ({ query }) =>
-      Effect.gen(function* () {
-        const repository = yield* StarsDbRepository;
-        const results = yield* repository.fullTextSearch(query.q);
-        return {
-          results,
-          error: null,
-        };
-      }).pipe(Effect.withSpan('getStars'), appError('could not get stars')),
+export const app = RouterBuilder.make(publicApi).pipe(
+  RouterBuilder.handle('getStars', ({ query }) =>
+    Effect.gen(function* () {
+      const repository = yield* StarsDbRepository;
+      const results = yield* repository.fullTextSearch(query.q);
+
+      return {
+        results,
+        error: null,
+      };
+    }).pipe(
+      Effect.withSpan('PublicApi.getStars'),
+      appError('Could not get stars'),
     ),
-    RouterBuilder.handle('getTest', () =>
-      Effect.gen(function* () {
-        let page = 1;
+  ),
+  RouterBuilder.handle('refreshStars', () =>
+    Effect.gen(function* () {
+      const GITHUB_STARS_FETCH_CONCURRENCY = 5;
 
-        while (true) {
-          const repository = yield* StarsDbRepository;
-          const githubRepository = yield* GithubApiRepository;
+      const fetchAndUpdateWorker = (initialPage: number) =>
+        Effect.iterate(initialPage, {
+          while: (page) => page !== -1 && page < 10,
+          body: (page) =>
+            Effect.gen(function* () {
+              const repository = yield* StarsDbRepository;
+              const githubRepository = yield* GithubApiRepository;
 
-          const response = yield* githubRepository.getStarred({ page });
-          yield* Effect.log(`page ${page} - length: ${response.length}`);
+              const response =
+                yield* githubRepository.getStarredRepositoriesWithPage({
+                  page,
+                });
+              yield* Effect.log(`page ${page} - length: ${response.length}`);
 
-          if (response.length === 0) break;
+              if (response.length === 0) return -1;
 
-          yield* pipe(
-            response,
-            Array.map(({ starred_at, repo }) =>
-              repository.insertOrUpdateStarredRepo({
-                starred_at,
-                ...repo,
-              }),
-            ),
-            Effect.all,
-            Effect.withRequestBatching(true),
-            Effect.withSpan('StarsDbRepository-store-all-repos'),
-          );
+              yield* pipe(
+                response,
+                Array.map(({ starred_at, repo }) =>
+                  repository.insertOrUpdateStarredRepo({
+                    starred_at,
+                    ...repo,
+                  }),
+                ),
+                Effect.allWith({ batching: true, discard: true }),
+                Effect.withSpan('StarsDbRepository-store-all-repos', {
+                  attributes: { initialPage, page },
+                }),
+              );
 
-          page++;
-        }
+              return page + GITHUB_STARS_FETCH_CONCURRENCY;
+            }),
+        });
 
-        return [`ok - last page: ${page}`];
-      }).pipe(Effect.withSpan('getStars'), appError('could not get stars')),
+      const workers = pipe(
+        Chunk.range(0, GITHUB_STARS_FETCH_CONCURRENCY - 1),
+        Chunk.map((initialPage) => fetchAndUpdateWorker(initialPage)),
+      );
+
+      yield* pipe(
+        workers,
+        Effect.allWith({
+          concurrency: GITHUB_STARS_FETCH_CONCURRENCY,
+        }),
+      );
+
+      return '✅ Ok';
+    }).pipe(
+      Effect.withSpan('refreshStars'),
+      appError('Could not refresh stars'),
     ),
-    RouterBuilder.build,
-    Middlewares.cors({ allowedOrigins: ['*'] }),
-    Middlewares.errorLog,
-  );
-});
+  ),
+  RouterBuilder.build,
+  Middlewares.cors({ allowedOrigins: ['*'] }),
+  Middlewares.accessLog(),
+  Middlewares.errorLog,
+  Middlewares.endpointCallsMetric(),
+);

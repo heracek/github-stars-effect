@@ -16,7 +16,7 @@ const liveApp = pipe(
   Effect.gen(function* () {
     const { port } = yield* AppConfig;
 
-    yield* pipe(app, Effect.flatMap(NodeServer.listen({ port })));
+    yield* pipe(app, NodeServer.listen({ port }));
   }),
   Effect.provide(GithubApiRepositoryLive),
   Effect.provide(StarsDbRepositoryLive),

@@ -6,15 +6,21 @@ import {
 } from '@effect/platform';
 
 import { AppConfig } from '../../layers/AppConfig';
-import { GithubApiRepository } from './GithubApiRepository';
+import {
+  GithubApiRepository,
+  GithubApiRepositoryApiError,
+} from './GithubApiRepository';
 import { ResponseStarredSchema } from './schema';
+
+const makeError = (message: string) =>
+  new GithubApiRepositoryApiError({ message });
 
 export const GithubApiRepositoryLive = Layer.effect(
   GithubApiRepository,
   Effect.gen(function* makeGithubRepository() {
     const { githubToken } = yield* AppConfig;
 
-    const getStarred = ({ page }: { page: number }) =>
+    const getStarredRepositoriesWithPage = ({ page }: { page: number }) =>
       pipe(
         HttpClientRequest.get('https://api.github.com/user/starred'),
         HttpClientRequest.setHeaders({
@@ -26,13 +32,19 @@ export const GithubApiRepositoryLive = Layer.effect(
         Effect.andThen(
           HttpClientResponse.schemaBodyJson(ResponseStarredSchema),
         ),
-        Effect.orDie,
+        Effect.catchTags({
+          RequestError: () => makeError('Error requesting GitHub API'),
+          ResponseError: () => makeError('Incorrect response from GitHub API'),
+          ParseError: () => makeError('Error parsing GitHub API response'),
+        }),
         Effect.scoped,
         Effect.withSpan('GithubRepository.getStarred', {
           attributes: { page },
         }),
       );
 
-    return GithubApiRepository.of({ getStarred });
+    return GithubApiRepository.of({
+      getStarredRepositoriesWithPage,
+    });
   }),
 );

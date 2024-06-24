@@ -8,8 +8,6 @@ export const SqliteClientLive = Layer.scopedContext(
   Effect.gen(function* () {
     const { dbFilename } = yield* AppConfig;
 
-    yield* Effect.log('SqliteClientLive', dbFilename);
-
     const client = yield* SqliteClient.make({
       filename: dbFilename,
     });

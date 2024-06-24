@@ -25,7 +25,8 @@ services:
       - ./config/prometheus.yaml:/etc/prometheus.yaml
     ports:
       - 9090:9090
-      - 9464:9464
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
 
   grafana:
     image: grafana/grafana:10.1.1
