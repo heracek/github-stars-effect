@@ -3,8 +3,14 @@
 @import 'prism-theme-vars/to-codemirror.css';
 
 :root {
+  --prism-font-size: 16px;
+  --twoslash-code-size: var(--prism-font-size);
   --prism-font-family: var(--slidev-code-font-family);
   --slidev-code-background: var(--prism-background);
+}
+
+.twoslash-popup-container .twoslash-popup-code {
+  font-size: var(--prism-font-size) !important;
 }
 
 html:not(.dark) {

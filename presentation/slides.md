@@ -15,15 +15,701 @@ routerMode: hash # more compatible with static site hosting
 ---
 
 ::date::
-xx.yy.2024
+June 27, 2024
 
 ::title::
-# Ciklum slides template
+
+# Effect:<br/><small>The Missing TypeScript Standard Library</small>
 
 ::description::
-<div class="pb-6">Everything you need to know about, ....</div>
-<div>Your Name</div>
-<div>Developer at Ciklum</div>
+
+<div>Tomáš Horáček <a href="mailto:toh@ciklum.com">toh@ciklum.com</a></div>
+<div>Principal Tech Lead at Ciklum</div>
+
+---
+layout: centered
+---
+
+# What is Effect 🤔
+
+---
+
+# What is Effect 🤔
+
+<v-clicks depth="2">
+
+- TypeScript library
+- useful primitives:
+  - 🧰 functional programming data primitives: `Option`, `Either`, `Chunk`, `Ref`, `Array`, `Record`, `Order`, `SortedMap`, `SortedSet`, `Queue`, ...
+  - 🛟 type safe error handling
+  - 🧑‍🔬 concurrency, fibers, observability, scheduling, interruptibility
+  - 🥳 "dependency injection"
+- helps build apps that are:
+  - ✅ reliable
+  - ✅ reusable
+  - ✅ testable
+  - ✅ maintainable
+  - ✅ scalable
+
+</v-clicks>
+
+---
+layout: centered
+---
+
+# Effect Basics 🎒 
+
+---
+
+# 🎒 Basics: Effect Type
+
+<v-click>
+
+`Effect<ASuccess, Error, Requirements>`
+
+</v-click>
+
+<v-click>
+
+... **immutable** representation of **lazy** program
+
+</v-click>
+
+<v-clicks>
+
+- `ASuccess`: "returned" value
+- `Error`: expected error(s)
+- `Requirements`: contextual requirement(s)
+
+</v-clicks>
+
+---
+
+# 🎒 Basics: Creating Effect
+
+`Effect<ASuccess, Error, Requirements>`
+
+```ts twoslash
+import { Effect } from 'effect';
+
+const success: Effect.Effect<number> = Effect.succeed(42);
+
+const failure = Effect.fail('Error');
+
+const parse = (input: string) => Effect.try(
+  () => JSON.parse(input)
+);
+```
+
+---
+
+# 🎒 Basics: Running Sync Effect
+
+```ts twoslash
+import { Effect } from "effect";
+
+const parse = (input: string) => Effect.try(
+  () => JSON.parse(input)
+);
+
+const program = parse('{"hello": "world"}');
+
+console.log(Effect.runSync(program));
+```
+
+---
+
+# 🎒 Basics: Running Async Effect
+
+```ts twoslash
+import { Effect } from "effect";
+
+const delay = (millis: number) =>
+  Effect.tryPromise(
+    () =>
+      new Promise<string>((resolve) => {
+        setTimeout(() => resolve("Done"), millis);
+      }),
+  );
+
+const program = delay(200);
+
+console.log(await Effect.runPromise(program));
+```
+
+---
+
+# Concurrency
+
+- Drake meme
+  - Threads vs Fibers
+  - Parallel  vs Concurrent
+https://commons.wikimedia.org/wiki/File:Parallel-concurrent.png
+https://msl-network.readthedocs.io/en/stable/concurrency_async.html
+
+---
+
+# 1) Effect ~== React for Logic
+
+```tsx
+const SomeComponent: React.Component<{ name: string }> = ({ name }) => (
+  <div>Hello, {name}</div>
+);
+
+const DifferentComponent: React.Component = () => <div>Yada, yada.</div>;
+
+const FinalComponent: React.Component<{ name: string }> = ({ name }) => (
+  <>
+    <SomeComponent name={name} />
+    <DifferentComponent />
+  </>
+);
+```
+
+```ts
+// (name: string) => Effect<never, never, string>
+const someEffect = (name: string) => Effect.succeed(`Hello, ${name}`);
+
+// () => Effect<never, never, string>
+const differentEffect = () => Effect.succeed(`Yada, yada.`);
+
+// (name: string) => Effect<never, never, [string, string]>
+const finalEffect = (name: string) =>
+  Effect.zip(someEffect(name), differentEffect);
+
+// (name: string) => Effect<never, never, string>
+const finalEffectString = (name: string) =>
+  Effect.zip(someEffect(name), differentEffect).pipe(
+    Effect.map((twoStrings) => twoStrings.join('\n')),
+  );
+```
+
+---
+
+# 2) Effect ~== React for Logic
+
+https://effect.website/docs/essentials/running#cheatsheet
+
+```tsx
+import { createRoot } from 'react-dom/client';
+
+const App = () => <div>Hello, World!</div>;
+
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
+
+// --- //
+
+import { Effect } from 'effect';
+
+const app = Effect.console('Hello, World!');
+
+Effect.runPromise(app);
+```
+
+---
+
+## 1) `Effect.gen` vs. `async`/`await`
+
+```ts
+const task1 = Promise.resolve(10);
+
+export const program = async function () {
+  const a = await task1;
+  return `Result is: ${a}`;
+};
+
+// --- //
+
+const task1 = Effect.promise(() => Promise.resolve(10));
+
+export const program = Effect.gen(function* (_) {
+  const a = yield* _(task1);
+  return `Result is: ${a}`;
+});
+```
+
+## 2) `Effect.gen` vs. `async`/`await`
+
+https://effect.website/docs/essentials/using-generators#comparing-effectgen-with-asyncawait
+
+---
+
+**thunk** = function that takes no arguments and returns some value ([source](https://effect.website/docs/guides/essentials/creating-effects))
+
+---
+
+## Constructors
+
+- `Effect.succeed` - successful Effect with specific value, not lazy
+- `Effect.fail` - failing Effect with specific error, not lazy
+- `Effect.sync` - synchronous side effect, never throws an error, lazy
+- `Effect.try` - synchronous, may throw error (by default `UnknownException`, but can be mapped), lazy
+- `Effect.promise` - async, `Promise` that never rejects, lazy
+- `Effect.tryPromise` - async, `Promise` that may reject (by default `UnknownException`, but can be mapped), lazy
+- `Effect.async` - async, code for "callback" style wrapping (e.g. Node.js `"fs"` library)
+- `Effect.suspend` [source](https://effect.website/docs/guides/essentials/creating-effects#suspended-effects) - **thunk** that delays creation of the effect
+  - useful for **lazy evaluation**, **handling circular dependencies**, **unifying return type**
+
+also see [Cheatsheet](https://effect.website/docs/guides/essentials/creating-effects#cheatsheet)
+
+---
+
+## Effect vs Promise
+
+### `Promise<Value>` vs `Effect<Value, Error, Requirements>`
+
+- expressive error handling
+- definition of requirements
+- `Promise` -> `Effect`:
+  - `Effect.promise`
+  - `Effect.tryPromise`
+
+---
+
+## Running Effect
+
+- `runSync` - run synchronously and immediately return the result
+  - execution will throw runtime error at first async effect is provided
+- `runSyncExit` - same as `runSync` but return `Exit` value containing result of execution (`Exit.Success<Value>`/`Exit.Failure<Error>`)
+- `runPromise` - runs asynchronous Effect and "return" value as `Promise`
+  - it will reject the `Promise` if Effect fails
+- `runPromiseExit` - run async Effect and "return" result as `Promise` that resolves to `Exit`
+  - (i think) the `Promise` will never reject
+
+see [Cheatsheet](https://effect.website/docs/guides/essentials/running-effects#cheatsheet)
+
+---
+
+## Generators
+
+- similar to `async`/`await`
+- optional part of Effect
+
+```ts
+const task = Effect.promise(() => Promise.resolve(42));
+
+export const program = Effect.gen(function* (_) {
+  const value = yield* _(task);
+  return `Result is: ${value}`;
+});
+```
+
+- ✅ `_` is `pipe` too!
+
+```ts
+import { Effect, Random } from 'effect';
+
+const program = Effect.gen(function* (_) {
+  const n = yield* _(
+    Random.next,
+    Effect.map((n) => n * 2),
+  );
+  return n;
+});
+```
+
+---
+
+## Advanced - `Effect.gen` in a class
+
+```ts
+import { Effect } from 'effect';
+
+class MyService {
+  readonly local = 1;
+  compute() {
+    // ...............  v--- sets `this` for generator
+    return Effect.gen(this, function* (_) {
+      return yield* _(Effect.succeed(this.local + 1));
+    });
+  }
+}
+```
+
+---
+
+## Pipelines
+
+- railway oriented programmig
+- Advantages
+  - readability
+  - code organization
+  - reusability
+  - type safety
+
+---
+
+### `pipe`
+
+- functions passed to `pipe` must take only one argument
+
+```ts
+import { pipe } from 'effect';
+
+const increment = (x: number) => x + 1;
+const double = (x: number) => x * 2;
+const subtractTen = (x: number) => x - 10;
+
+const result = pipe(5, increment, double, subtractTen);
+
+console.log(result); // Output: 2
+```
+
+---
+
+Effect uses functions.
+
+```ts
+import { pipe, ReadonlyArray } from 'effect';
+
+console.log(
+  // methods and chaining
+  [1, 2, 3]
+    .map((i) => i + 1) //
+    .map((i) => `${i}`),
+);
+
+console.log(
+  // pipe and functions
+  pipe(
+    [1, 2, 3],
+    ReadonlyArray.map((i) => i + 1),
+    ReadonlyArray.map((i) => `${i}`),
+  ),
+);
+```
+
+- ✅ tree-shakeblity
+- ✅ extensibility
+- there is and exception of `pipe`: `Effect.succeed(1).pipe(...)`
+
+---
+
+### `Effect.map`
+
+```ts
+import { pipe, Effect } from 'effect';
+
+const mappedEffect = pipe(
+  Effect.succeed(5),
+  Effect.map((x) => x + 1),
+);
+
+Effect.runPromise(mappedEffect).then(console.log); // Output: 6
+```
+
+---
+
+### `Effect.flatMap`
+
+Similar to `Effect.map`, but works with functions that return `Effect`.
+
+```ts
+import { pipe, Effect } from 'effect';
+
+const divide = (a: number, b: number): Effect.Effect<number, Error> =>
+  b === 0
+    ? Effect.fail(new Error('Cannot divide by zero'))
+    : Effect.succeed(a / b);
+
+const flatMappedEffect = pipe(
+  Effect.succeed([10, 2]),
+  Effect.flatMap(([a, b]) => divide(a, b)),
+);
+
+Effect.runPromise(flatMappedEffect).then(console.log); // Output: 5
+```
+
+---
+
+## `Effect.tap`
+
+- similar to `Effect.flatMap`
+- executes side-effect without altering result
+
+```ts
+import { pipe, Effect } from 'effect';
+
+const program = pipe(
+  Effect.succeed([10, 2]),
+  Effect.tap(([a, b]) =>
+    Effect.sync(() => console.log(`Performing division: ${a} / ${b}`)),
+  ),
+  // [a, b] is still available!
+  Effect.flatMap(([a, b]) => divide(a, b)),
+);
+```
+
+```ts
+import { pipe, Console, Effect } from 'effect';
+
+const program = pipe(
+  Effect.succeed([10, 2]),
+  Effect.tap(([a, b]) => Console.log([a, b])),
+  // [a, b] is still available!
+  Effect.flatMap(([a, b]) => divide(a, b)),
+);
+```
+
+---
+
+## `Effect.all`
+
+- combines effects provided in tuple/Array
+- ❗ unlike `Promise.all`: `Effect.all` runs effect in sequence as provided
+
+```ts
+import { pipe, Console, Effect } from 'effect';
+
+const program = pipe(
+  Effect.all([
+    Effect.succeed(42), //
+    Effect.succeed('Hello'),
+  ]),
+  Effect.tap(Console.log), // Output: [42, "Hello"]
+);
+```
+
+- by default short-circuiting: on first error it will stop executing and return **first error**
+- `Effect.all` works with:
+  - tuples, Iterables, structs, Records
+  - ([source](https://effect.website/docs/guides/control-flow#all))
+
+---
+
+## `Effect.all` mode `"either"`
+
+```ts
+import { Effect, Console } from 'effect';
+
+const program = [
+  [
+    Effect.succeed('Task1').pipe(Effect.tap(Console.log)),
+    Effect.fail('Task2: Oh no!').pipe(Effect.tap(Console.log)),
+    Effect.succeed('Task3').pipe(Effect.tap(Console.log)),
+  ],
+  Effect.all({ mode: 'either' }),
+];
+```
+
+- return tuple of `Either`s types
+  - `Either.right` is "success" with value
+  - `Either.left` is "failure" with error
+
+---
+
+## `Effect.all` mode `"validate"`
+
+- return tuple of values
+- if some input Effect fails the error is tuple of `Options`
+  - `Option.some` is "success" with value
+  - `Option.none` is "failure" (without error)
+
+---
+
+# Error Handling
+
+- **Expected Errors**: anticipated errors handled by type system
+  - `Effect<string, HttpError>`
+- **Unexpected Errors**: unexpected and not part of intuited program flow
+  - sometimes called "defects", "untyped errors", "unrecoverable errors"
+  - not tracked in Effect type
+
+---
+
+## Expected Error
+
+```ts
+import { Effect } from 'effect';
+
+class HttpError {
+  readonly _tag = 'HttpError';
+}
+
+const program = Effect.fail(new HttpError());
+```
+
+- class used to get concise syntax for:
+  - type `HttpError`
+  - constructor `new HttpError()`
+  - e.g.: `const error: HttpError = new HttpError()`
+- but anything could represent error in Effect
+- `_tag` is used as **discriminant field**
+  - helpful to distinguish between errors
+  - also prevents TypeScript unification of types
+
+---
+
+### Error Tracking
+
+```ts
+import { Effect, Random } from 'effect';
+
+class FooError {
+  readonly _tag = 'FooError';
+}
+
+class BarError {
+  readonly _tag = 'BarError';
+}
+
+// Effect<string, FooError | BarError>
+const program = Effect.gen(function* (_) {
+  const rand = yield* _(Random.next);
+
+  if (rand < 0.33333333) return 'yay!';
+
+  return rand > 0.6666666
+    ? yield* _(Effect.fail(new FooError()))
+    : yield* _(Effect.fail(new BarError()));
+});
+```
+
+---
+
+## Catching Errors
+
+### `Effect.either`
+
+```ts
+Effect<A, E, R> -> Effect<Either<E, A>, never, R>
+```
+
+- use `Either.match`
+- if all errors use `readonly _tag` filed
+  - you can use `Effect.catchTag`:
+  ```ts
+  const recovered = spipe(
+    Effect.catchTag('FooError', (_fooError) =>
+      Effect.succeed('Recovering from FooError'),
+    ),
+  );
+  ```
+- or `Effect.catchTags` to catch multiple tags:
+  ```ts
+  const recovered = program.pipe(
+    Effect.catchTags({
+      FooError: (_fooError) => Effect.succeed(`Recovering from FooError`),
+      BarError: (_barError) => Effect.succeed(`Recovering from BarError`),
+    }),
+  );
+  ```
+
+---
+
+## Unrecoverable Errors
+
+- `Effect.die` - any error
+- `Effect.dieMessage` - `RuntimeException` with specific message
+- `Effect.orDie` - move all recoverable errors to unrecoverable (when I don't wish to handle errors)
+- `Effect.orDieWith` - allows to map errors
+
+---
+
+### Catching Unrecoverable Errors
+
+- usually app should crash when there is a defect
+- in some cases (like application plugins) it may be useful to catch defects and not crash the app
+- `Effect.catchAllDefects`
+  - handles only **defects**, not expected errors
+- `Effect.catchSomeDefect`
+  - recover from some errors
+  - return `Option.some(Effect)` for caught error,
+  - or `Option.none()` for uncaugth
+
+---
+
+## Fallback
+
+- `Effect.orElse`: try one effect, if fails try another one
+- `Effect.orElseSucceed` - replaces value if one fails
+- `Effect.orElseFail` - replaces error if one fails (ignoring original error(s))
+- `Effect.firstSuccessOf`
+  - returns first successful value, or last error
+
+---
+
+## Matching
+
+- `Effect.match` - handle both cases, return new success
+- `Effect.ignore` - ignore both success and failure
+- `Effect.matchEffect` - handle both, return new Effects
+- `Effect.matchCause` / `Effect.matchCauseEffect` - access to full cause
+
+---
+
+...
+
+---
+
+- `Effect.filterOrFail` as type-guard
+
+```ts
+Effect.filterOrFail(
+  // Define a guard to narrow down the type
+  (user): user is User => user !== null,
+  () => new Error('Unauthorized'),
+);
+```
+
+- you may use `Predicate.isNotNull`
+
+---
+
+# Services
+
+```ts
+export class ServiceRandom extends Context.Tag('ServiceRandom')<
+  ServiceRandom,
+  { readonly next: Effect.Effect<number> }
+>() {}
+```
+
+---
+
+### Advanced - `Effect.as`
+
+- replaces Effect with new provided in argument
+
+```ts
+import { pipe, Effect } from 'effect';
+
+const program = pipe(
+  Effect.succeed(5), //
+  Effect.as('new value'),
+);
+
+Effect.runPromise(program).then(console.log); // Output: "new value"
+```
+
+---
+
+## Dual (API)
+
+A lot of Effect functions support dual API: "data-first" and "data-last"
+
+```ts {all|5|7|7-8|10|all} twoslash
+import { pipe, Effect } from 'effect';
+
+// Data first
+Effect.map(Effect.succeed(1), (n) => n + 1);
+
+// Data last
+
+pipe(
+  Effect.succeed(1),
+  Effect.map((n) => n + 1),
+);
+
+// or
+
+Effect.succeed(1).pipe(Effect.map((n) => n + 1));
+```
+
+---
+
+# END
 
 ---
 layout: default
@@ -142,151 +828,6 @@ transition: slide-up
 ---
 
 # Next slide is an iframe
-
----
-layout: iframe
-url: https://sli.dev/builtin/layouts
----
-
----
-layout: two-columns
----
-
-::left::
-# Table of contents
-
-You can use the `Toc` component to generate a table of contents for your slides:
-
-```html
-<Toc minDepth="1" maxDepth="1"></Toc>
-```
-
-The title will be inferred from your slide content, or you can override it with `title` and `level` in your frontmatter.
-
-::right::
-
-<Toc v-click minDepth="1" maxDepth="2"></Toc>
-
----
-
-# Code
-
-Use code snippets and get the highlighting directly, and even types hover![^1]
-
-```ts {all|5|7|7-8|10|all} twoslash
-// TwoSlash enables TypeScript hover information
-// and errors in markdown code blocks
-// More at https://shiki.style/packages/twoslash
-
-import { computed, ref } from 'vue'
-
-const count = ref(0)
-const doubled = computed(() => count.value * 2)
-doubled.value = 2
-```
-
-<arrow v-click="[4, 5]" x1="350" y1="310" x2="195" y2="334" color="var(--ciklum-color-blue)" width="2" arrowSize="1" />
-
-<!-- This allow you to embed external code blocks -->
-<<< @/snippets/external.ts#snippet
-
-<!-- Footer -->
-[^1]: [Learn More](https://sli.dev/guide/syntax.html#line-highlighting)
-
-<!-- Inline style -->
-<style>
-
-.footnotes {
-  @apply text-sm;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
-
-<!--
-Notes can also sync with clicks
-
-[click] This will be highlighted after the first click
-
-[click] Highlighted with `count = ref(0)`
-
-[click:3] Last click (skip two clicks)
--->
-
----
-level: 2
----
-
-# Shiki Magic Move
-
-Powered by [shiki-magic-move](https://shiki-magic-move.netlify.app/), Slidev supports animations across multiple code snippets.
-
-Add multiple code blocks and wrap them with <code>````md magic-move</code> (four backticks) to enable the magic move. For example:
-
-````md magic-move
-```ts {*|2|*}
-// step 1
-const author = reactive({
-  name: 'John Doe',
-  books: [
-    'Vue 2 - Advanced Guide',
-    'Vue 3 - Basic Guide',
-    'Vue 4 - The Mystery'
-  ]
-})
-```
-
-```ts {*|1-2|3-4|3-4,8}
-// step 2
-export default {
-  data() {
-    return {
-      author: {
-        name: 'John Doe',
-        books: [
-          'Vue 2 - Advanced Guide',
-          'Vue 3 - Basic Guide',
-          'Vue 4 - The Mystery'
-        ]
-      }
-    }
-  }
-}
-```
-
-```ts
-// step 3
-export default {
-  data: () => ({
-    author: {
-      name: 'John Doe',
-      books: [
-        'Vue 2 - Advanced Guide',
-        'Vue 3 - Basic Guide',
-        'Vue 4 - The Mystery'
-      ]
-    }
-  })
-}
-```
-
-Non-code blocks are ignored.
-
-```vue
-<!-- step 4 -->
-<script setup>
-const author = {
-  name: 'John Doe',
-  books: [
-    'Vue 2 - Advanced Guide',
-    'Vue 3 - Basic Guide',
-    'Vue 4 - The Mystery'
-  ]
-}
-</script>
-```
-````
 
 ---
 

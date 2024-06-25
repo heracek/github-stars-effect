@@ -14,3 +14,7 @@ pnpm-lock.yaml
 
 # Generated Files
 /apps/github-stars-effect-server/drizzle/meta
+
+/presentation/slides.md
+/presentation/theme/example.md
+/presentation/pages/*.md
