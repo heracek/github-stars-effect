@@ -1,0 +1,7 @@
+# Slides should be formatted using `slidev format` and not `prettier`!
+/slides.md
+/theme/example.md
+/pages/*.md
+
+package.json
+/pnpm-lock.yaml

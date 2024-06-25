@@ -1,0 +1,26 @@
+{
+  "name": "slidev-ciklum",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "slidev build",
+    "dev": "slidev",
+    "export": "slidev export",
+    "format": "pnpm run --sequential='/format:.*/'",
+    "format:slides": "slidev format slides.md theme/example.md pages/*.md",
+    "format:prettier": "prettier --write ./{components,snippets,theme,vite.config.ts,vercel.json,.prettierrc.yml}"
+  },
+  "dependencies": {
+    "@excalidraw/excalidraw": "^0.17.5",
+    "@slidev/cli": "^0.48.9",
+    "@slidev/theme-default": "latest",
+    "@slidev/theme-seriph": "latest",
+    "theme-vitesse": "^0.1.14",
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.43.1",
+    "prettier": "^3.2.5"
+  },
+  "packageManager": "pnpm@8.15.7+sha256.50783dd0fa303852de2dd1557cd4b9f07cb5b018154a6e76d0f40635d6cee019"
+}
