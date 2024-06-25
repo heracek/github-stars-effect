@@ -1,4 +1,4 @@
-import { Effect, Layer, pipe, Redacted } from 'effect';
+import { Effect, Layer, pipe, Redacted, Schedule } from 'effect';
 import {
   HttpClient,
   HttpClientRequest,
@@ -14,6 +14,9 @@ import { ResponseStarredSchema } from './schema';
 
 const makeError = (message: string) =>
   new GithubApiRepositoryApiError({ message });
+
+// 1, 2, 8, 16, 32, ...
+const retrySchedule = Schedule.exponential('1 second');
 
 export const GithubApiRepositoryLive = Layer.effect(
   GithubApiRepository,
@@ -32,14 +35,18 @@ export const GithubApiRepositoryLive = Layer.effect(
         Effect.andThen(
           HttpClientResponse.schemaBodyJson(ResponseStarredSchema),
         ),
+        Effect.scoped,
+        Effect.tapError((e) =>
+          Effect.log(`GithubRepository.getStarred failed page=${page}`, `${e}`),
+        ),
+        Effect.withSpan('GithubRepository.getStarred', {
+          attributes: { page },
+        }),
+        Effect.retry({ times: 5, schedule: retrySchedule }),
         Effect.catchTags({
           RequestError: () => makeError('Error requesting GitHub API'),
           ResponseError: () => makeError('Incorrect response from GitHub API'),
           ParseError: () => makeError('Error parsing GitHub API response'),
-        }),
-        Effect.scoped,
-        Effect.withSpan('GithubRepository.getStarred', {
-          attributes: { page },
         }),
       );
 
