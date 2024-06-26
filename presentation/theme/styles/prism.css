@@ -3,7 +3,7 @@
 @import 'prism-theme-vars/to-codemirror.css';
 
 :root {
-  --prism-font-size: 16px;
+  --prism-font-size: 14px;
   --twoslash-code-size: var(--prism-font-size);
   --prism-font-family: var(--slidev-code-font-family);
   --slidev-code-background: var(--prism-background);

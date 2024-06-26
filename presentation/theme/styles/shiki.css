@@ -5,3 +5,7 @@
 .shiki-dark {
   background: #1b1b1b !important;
 }
+
+.shiki *::selection {
+  background: lightblue !important;
+}

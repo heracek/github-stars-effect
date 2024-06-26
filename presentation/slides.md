@@ -1,11 +1,12 @@
 ---
-title: 'Ciklum presentation'
-layout: intro
+title: 'Effect: The Missing TypeScript Standard Library'
+layout: centered
+background: ./01.png
 # Presentation Setup (for all option see: https://sli.dev/custom/#frontmatter-configures)
 theme: ./theme
 class: 'text-center'
 highlighter: shiki # https://sli.dev/custom/highlighters.html
-lineNumbers: true # show line numbers in code blocks
+lineNumbers: false # show line numbers in code blocks
 drawings:
   persist: false # persist drawings in exports and build
 transition: none # no transition for better online screen sharing - or use "slide-left"
@@ -14,23 +15,36 @@ mdc: true # enable "Markdown Components" syntax: https://sli.dev/guide/syntax#md
 routerMode: hash # more compatible with static site hosting
 ---
 
-::date::
-June 27, 2024
+---
+layout: centered
+background: ./02.png
+---
 
-::title::
+---
+layout: centered
+background: ./03.png
+---
 
-# Effect:<br/><small>The Missing TypeScript Standard Library</small>
+---
+layout: cover
+---
 
-::description::
+# Table of Contents
 
-<div>Tomáš Horáček <a href="mailto:toh@ciklum.com">toh@ciklum.com</a></div>
-<div>Principal Tech Lead at Ciklum</div>
+<v-clicks style="zoom: 150%">
+
+1. **What is Effect 🤔**
+2. **Basics 🎒**
+3. **Live Coding 🧑‍💻**
+4. **Closing Thoughts 💡**
+
+</v-clicks>
 
 ---
 layout: centered
 ---
 
-# What is Effect 🤔
+# 1️⃣ What is Effect 🤔
 
 ---
 
@@ -54,10 +68,16 @@ layout: centered
 </v-clicks>
 
 ---
+layout: image
+image: mind.jpg
+backgroundSize: contain
+---
+
+---
 layout: centered
 ---
 
-# Effect Basics 🎒 
+# 2️⃣ Effect Basics 🎒 
 
 ---
 
@@ -75,7 +95,7 @@ layout: centered
 
 </v-click>
 
-<v-clicks>
+<v-clicks depth="4">
 
 - `ASuccess`: "returned" value
 - `Error`: expected error(s)
@@ -84,32 +104,102 @@ layout: centered
 </v-clicks>
 
 ---
+layout: two-columns
+---
+
+::top::
 
 # 🎒 Basics: Creating Effect
 
+::left::
+
+<v-click at="1">
+
 `Effect<ASuccess, Error, Requirements>`
+
+</v-click>
+<v-click at="2">
 
 ```ts twoslash
 import { Effect } from 'effect';
 
-const success: Effect.Effect<number> = Effect.succeed(42);
+const success: Effect.Effect<number>
+  = Effect.succeed(42);
+```
 
+</v-click>
+<v-click at="5">
+
+```ts twoslash
+import { Effect } from 'effect';
+// ---cut---
 const failure = Effect.fail('Error');
+```
 
-const parse = (input: string) => Effect.try(
-  () => JSON.parse(input)
+</v-click>
+<v-click at="7">
+
+```ts twoslash
+import { Effect } from 'effect';
+// ---cut---
+const parse = (data: string) => Effect.try(
+  () => JSON.parse(data)
 );
 ```
 
----
+</v-click>
 
-# 🎒 Basics: Running Sync Effect
+::right::
+
+<v-click at="3">
+
+😝 ~~ `Promise<ASuccess>`
+
+</v-click>
+<v-click at="4">
 
 ```ts twoslash
+
+
+const success = Promise.resolve(42);
+```
+
+</v-click>
+<v-click at="6">
+
+```ts twoslash
+
+const failure = Promise.reject('Error');
+```
+
+</v-click>
+<v-click at="8">
+
+```ts twoslash
+const parse = (data: string) => new Promise<any>(
+  (resolve) => resolve(JSON.parse(data))
+);
+```
+
+</v-click>
+
+---
+layout: two-columns
+---
+
+::top::
+
+# 🎒 Basics: 🏃 Running ➡️ Sync Effect
+
+::left::
+
+`Effect`
+
+```ts {1-5|1-7|all} twoslash
 import { Effect } from "effect";
 
-const parse = (input: string) => Effect.try(
-  () => JSON.parse(input)
+const parse = (data: string) => Effect.try(
+  () => JSON.parse(data)
 );
 
 const program = parse('{"hello": "world"}');
@@ -117,11 +207,37 @@ const program = parse('{"hello": "world"}');
 console.log(Effect.runSync(program));
 ```
 
+::right::
+
+<v-click>
+
+😝 ~~ `React`
+
+
+```tsx {1-5|1-7|all} twoslash
+import * as React from 'react';
+// ---cut---
+import { createRoot } from 'react-dom/client';
+
+const App = ({ data }: { data: string}) => (
+  <div>Hello, {data}!</div>
+);
+
+const program = <App data="World" />;
+
+const root = createRoot(
+  document.getElementById('root')!
+);
+root.render(program);
+```
+
+</v-click>
+
 ---
 
-# 🎒 Basics: Running Async Effect
+# 🎒 Basics: 🏃 Running 🕰️ Async Effect
 
-```ts twoslash
+```ts {1-9|1-11|1-13|all} twoslash
 import { Effect } from "effect";
 
 const delay = (millis: number) =>
@@ -134,8 +250,298 @@ const delay = (millis: number) =>
 
 const program = delay(200);
 
-console.log(await Effect.runPromise(program));
+Effect.runSync(program) // 👎 throws an error
+console.log(await Effect.runPromise(program)); // 👍
 ```
+
+---
+layout: two-columns
+---
+
+::top::
+
+# 🎒 Basics: 🪈 `pipe`
+
+::left::
+
+```ts {1|all} twoslash
+import { pipe } from 'effect';
+
+const result = pipe(
+  1,
+  a => a + 2, // 1 + 2 = 3
+  b => b * 3, // 3 * 3 = 9
+  c => { console.log(c); return c; },
+  d => `result: ${d}`, // result: 9
+);
+```
+
+::right::
+
+<v-click>
+
+```ts {1-3|1-4|1-5|1-6|1-7|1-9|all} twoslash
+import { Effect, pipe } from 'effect';
+
+const program = pipe(
+  Effect.succeed(1),
+  Effect.map(a => a + 2),
+  Effect.flatMap(b => Effect.succeed(b * 3)),
+  Effect.tap(c => Effect.log(c)),
+  Effect.map(d => `result: ${d}`),
+);
+
+const result = await Effect.runPromise(program);
+```
+
+</v-click>
+
+---
+layout: centered
+background: ./theme/bgs/wawy3.png
+---
+
+# 🎒 Basics: Mini Demo 01
+
+https://github.com/heracek/github-stars-effect
+
+`pnpm basics01`
+
+---
+layout: two-columns
+---
+
+::top::
+
+# 🎒 Basics<v-click at="2">: 🧬 `Effect.gen`</v-click>
+
+::left::
+
+😝 ~~ `Promise`
+
+<v-click>
+
+```ts
+import sleep from 'sleep-promise';
+
+
+const asyncRandom = async (delay: number) => {
+  const data = await fetchRandomInt(
+    0,
+    100
+  );
+
+  await sleep(delay)
+
+  return data
+};
+```
+
+</v-click>
+
+::right::
+
+<v-click at="3">
+
+`Effect`
+
+```ts twoslash
+import { Effect, Random } from 'effect';
+
+const asyncRandom = (delay: number) =>
+  Effect.gen(function* () {
+    const data = yield* Random.nextIntBetween(
+      0,
+      100
+    );
+
+    yield* Effect.sleep(delay);
+
+    return data;
+  });
+```
+
+</v-click>
+
+---
+layout: two-columns
+---
+
+::top::
+
+# 🎒 Basics<v-click at="2">: 🏎️ `Effect.all`</v-click>
+
+::left::
+
+😝 ~~ `Promise.all`
+
+<v-click>
+
+```ts twoslash
+
+const asyncRandom = async (delay: number) => {
+// ---cut-start---
+  return 1
+// ---cut-end---
+  // ...
+};
+
+
+const data = Promise.all([
+  asyncRandom(2000),
+  asyncRandom(2000),
+  asyncRandom(2000),
+  asyncRandom(2000),
+  asyncRandom(2000),
+]);
+```
+
+</v-click>
+
+<v-click at="4">
+
+👎 `Promise`: eager execution
+
+</v-click>
+
+::right::
+
+<v-click at="3">
+
+`Effect.all`
+
+```ts twoslash
+import { Effect, Random } from 'effect';
+
+// ---cut---
+const asyncRandom = (delay: number) =>
+  Effect.gen(function* () {
+// ---cut-start---
+    const data = yield* Random.nextIntBetween(
+      0,
+      100
+    );
+
+    yield* Effect.sleep(delay);
+
+    return data;
+// ---cut-end---
+    // ...
+  });
+
+
+const data = Effect.all([
+  asyncRandom(2000),
+  asyncRandom(2000),
+  asyncRandom(2000),
+  asyncRandom(2000),
+  asyncRandom(2000),
+], { concurrency: 'unbounded' });
+```
+
+</v-click>
+
+<v-click at="5">
+
+👍 `Effect`: lazy execution
+
+</v-click>
+
+<v-click at="6">
+
+```ts
+Effect.all([...], { concurrency: 3 });
+```
+
+</v-click>
+
+---
+layout: centered
+background: ./theme/bgs/wawy3.png
+---
+
+# 🎒 Basics: Mini Demo 02
+
+https://github.com/heracek/github-stars-effect
+
+`pnpm basics02`
+
+---
+
+# 📚 Effect Docs
+
+<v-clicks>
+
+- 🤩 [effect.website/docs](https://effect.website/docs/introduction)
+- 🧑‍🔬 [github.com/Effect-TS/effect/tree/main/packages](https://github.com/Effect-TS/effect/tree/main/packages)
+  - [github.com/Effect-TS/effect/tree/main/packages/schema#readme](https://github.com/Effect-TS/effect/tree/main/packages/schema#readme)
+  - [github.com/Effect-TS/effect/tree/main/packages/platform#readme](https://github.com/Effect-TS/effect/tree/main/packages/platform#readme)
+- 📺 [youtube.com/@effect-ts](https://www.youtube.com/@effect-ts)
+  - Effect Days 2024 conference videos
+  - Effect Days 2024: Beginner / Intermediate Workshop: [youtu.be/Lz2J1NBnHK4](https://youtu.be/Lz2J1NBnHK4)
+
+</v-clicks>
+
+---
+layout: centered
+---
+
+# 3️⃣ Live Coding 🧑‍💻
+
+---
+layout: center
+---
+
+# 🧑‍💻 Live Coding: GitHub Stars App
+
+<div class="grid grid-cols-1">
+
+```mermaid {theme: 'base', scale: 0.8}
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#00ffbe',
+      'primaryTextColor': '#001528',
+      'primaryBorderColor': '#001528',
+      'lineColor': '#001528',
+      'secondaryColor': '#50eaff',
+      'tertiaryColor': '#6450ff',
+      'noteTextColor': '#ffffff',
+      'noteBkgColor': '#6450ff',
+      'fontFamily': 'Public Sans'
+      
+    }
+  }
+}%%
+graph LR
+  G[GitHub API]
+  S{Server} -->|/refresh-stars| G
+  S -->|SQL| DB[SQLite]
+  S -->|/stars| F[Expo App]
+```
+
+</div>
+
+---
+layout: centered
+---
+
+# Questions?
+
+---
+layout: thank-you
+---
+
+---
+layout: centered
+background: ./91.png
+---
+
+---
+layout: centered
+background: ./92.jpg
+---
 
 ---
 
@@ -150,6 +556,18 @@ https://msl-network.readthedocs.io/en/stable/concurrency_async.html
 ---
 
 # 1) Effect ~== React for Logic
+
+Can I just mix multiple libraries to get functionality similar to Effect?
+
+Maybe...
+
+With Effect it's easy to mix things. Also it is easy to wrap things to Effect.
+
+Similar to React. Almost any React library will work in any React app...
+
+React Components are very composable.
+
+Effects are very Composable too.
 
 ```tsx
 const SomeComponent: React.Component<{ name: string }> = ({ name }) => (
@@ -186,6 +604,19 @@ const finalEffectString = (name: string) =>
 
 ---
 
+# Effect vs Promises
+
+- no errors
+- no requirements (Context)
+
+```ts
+Effect.all([...])
+
+Promise.all([...])
+```
+
+---
+
 # 2) Effect ~== React for Logic
 
 https://effect.website/docs/essentials/running#cheatsheet
@@ -202,7 +633,7 @@ root.render(<App />);
 
 import { Effect } from 'effect';
 
-const app = Effect.console('Hello, World!');
+const app = Effect.log('Hello, World!');
 
 Effect.runPromise(app);
 ```
@@ -709,6 +1140,33 @@ Effect.succeed(1).pipe(Effect.map((n) => n + 1));
 
 ---
 
+- I don't know a thing about Effect.
+- Is there alternatives?
+  - nothing
+    - ~= mess?
+  - other FP
+    - fp-ts/io-ts ... dead
+    - [morphic-ts](https://github.com/sledorze/morphic-ts)
+    - Zod, valibot, ...
+    - ramda, lodash, ...
+    - axios
+    - RxJS
+  - other languages
+    - Scala + ZIO
+    - Rust?
+- What are bad sides? What you don't like?
+- Is it usable for back-end development?
+- Branded types
+- Error handling (process errors from API response)
+- Is it suitable for event-based projects?
+  - ???
+- How does it compare to reactive programming libs such as RxJS?
+- 4. Do you use it in commercial projects? How it goes?
+- 5. How did you sell it to team members and managers?
+- 6. Did you see any challenges which slows you (a team) down?
+
+---
+
 # END
 
 ---
@@ -822,239 +1280,8 @@ background: '#f3f3f3'
 <img src="/test.png" style="height: 25rem">
 
 ---
-layout: centered
-background: '#f3f3f3'
-transition: slide-up
----
-
-# Next slide is an iframe
-
----
-
-# Diagrams
-
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
-
-<div class="grid grid-cols-3 gap-5 pt-4 -mb-6">
-
-```mermaid {theme: 'base', scale: 0.5, alt: 'A simple sequence diagram'}
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#00ffbe',
-      'primaryTextColor': '#001528',
-      'primaryBorderColor': '#001528',
-      'lineColor': '#001528',
-      'secondaryColor': '#50eaff',
-      'tertiaryColor': '#6450ff',
-      'noteTextColor': '#ffffff',
-      'noteBkgColor': '#6450ff',
-      'fontFamily': 'Public Sans'
-    }
-  }
-}%%
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
-```
-
-```mermaid {theme: 'base', scale: 0.8}
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#00ffbe',
-      'primaryTextColor': '#001528',
-      'primaryBorderColor': '#001528',
-      'lineColor': '#001528',
-      'secondaryColor': '#50eaff',
-      'tertiaryColor': '#6450ff',
-      'noteTextColor': '#ffffff',
-      'noteBkgColor': '#6450ff',
-      'fontFamily': 'Public Sans'
-      
-    }
-  }
-}%%
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
-
-```mermaid {theme: 'base'}
-%%{
-  init: {
-    'theme': 'base',
-   
-    "pie": {"textPosition": 0.7}, 
-    "themeVariables": {
-      "pieOuterStrokeWidth": "2px",
-      'primaryColor': '#00ffbe',
-      'primaryTextColor': '#001528',
-      'primaryBorderColor': '#001528',
-      'lineColor': '#001528',
-      'secondaryColor': '#50eaff',
-      'tertiaryColor': '#6450ff',
-      'noteTextColor': '#ffffff',
-      'noteBkgColor': '#6450ff',
-      'fontFamily': 'Public Sans',
-      'pieOpacity':1,
-      'pieTitleTextSize':'30px',
-      'pieLegendTextSize':'20px'
-      }
-  }
-}%%
-pie showData
-    title Key elements in Product X
-    "Calcium" : 32.96
-    "Potassium" : 50.05
-    "Magnesium" : 10.01
-    "Iron" :  15
-```
-</div>
-
-[Learn More](https://sli.dev/guide/syntax.html#diagrams)
-
----
-
-# Diagrams 2
-
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
-
-<div class="grid grid-cols-2 gap-5 pt-4 -mb-6">
-
-```mermaid {theme: 'base', scale:  0.9}
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#00ffbe',
-      'primaryTextColor': '#fff',
-      'lineColor': '#001528',
-      'secondaryColor': '#50eaff',
-      'tertiaryColor': '#6450ff',
-      'fontFamily': 'Public Sans'
-    }
-  }
-}%%
-gitGraph
-   commit
-   commit
-   branch develop
-   checkout develop
-   commit
-   commit
-   checkout main
-   merge develop
-   commit
-   commit
-
-```
-
-```mermaid {theme: 'base'}
-%%{
-  init: { 
-  "themeVariables": 
-    {
-      'fontFamily': 'Public Sans',
-      "xyChart": 
-      {
-        'plotColorPalette': '#00ffbe, #6450ff, #50eaff, #0020bb'
-        
-      } 
-    } 
-  }
-}%%
-xychart-beta
-    title "Sales Revenue"
-    x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
-    y-axis "Revenue (in $)" 4000 --> 11000
-    bar [5000, 6000, 7500, 8200, 9500, 10500, 11000, 10200, 9200, 8500, 7000, 6000]
-    line [5000, 6000, 7500, 8200, 9500, 10500, 11000, 10200, 9200, 8500, 7000, 6000]
-
-```
-</div>
-
-[Learn More](https://sli.dev/guide/syntax.html#diagrams)
-
----
 withLogo: false
 background: '#f3f3f3'
 ---
 
 <excalidraw-svg src="drawings/example.excalidraw" :fullscreen="true" />
-
----
-
-# Clicks Animations
-
-You can add `v-click` to elements to add a click animation.
-
-<div v-click>
-
-This shows up when you click the slide:
-
-```html
-<div v-click>This shows up when you click the slide.</div>
-```
-
-</div>
-
-<br>
-
-<v-click>
-
-The <span v-mark.red="3"><code>v-mark</code> directive</span>
-also allows you to add
-<span v-mark.circle.orange="4">inline marks</span>
-, powered by [Rough Notation](https://roughnotation.com/):
-
-```html
-<span v-mark.underline.orange>inline markers</span>
-```
-
-</v-click>
-
-<div mt-20 v-click>
-
-[Learn More](https://sli.dev/guide/animations#click-animations)
-
-</div>
-
----
-
-# Monaco Editor
-
-Add `{monaco}` to the code block to turn it into an editor:
-
-```ts {monaco}
-import { ref } from 'vue'
-import hello from './external'
-
-const code = ref('const a = 1')
-hello()
-```
-
-Use `{monaco-run}` to create an editor that can execute the code directly in the slide:
-
-```ts {monaco-run}
-function fibonacci(n: number): number {
-  return n <= 1
-    ? n
-    : fibonacci(n - 1) + fibonacci(n - 2) // you know, this is NOT the best way to do it :P
-}
-
-console.log(Array.from({ length: 10 }, (_, i) => fibonacci(i + 1)))
-```
-
----
-layout: centered
----
-
-# Questions?
-
----
-layout: thank-you
----

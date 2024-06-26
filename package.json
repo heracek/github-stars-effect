@@ -15,7 +15,9 @@
     "check-all:build": "nx run-many --target=build --all --exclude=github-stars-effect,github-stars-effect-e2e",
     "upgrade:expo": "expo install expo expo-constants expo-router expo-system-ui react-native react-native-web react-native-reanimated react-native-safe-area-context react-native-svg react-native-svg-transformer react-native-screens",
     "fix-watchman": "watchman watch-del-all; watchman shutdown-server",
-    "fix-port": "nx daemon --stop; lsof -t -i:4000 | xargs kill -9"
+    "fix-port": "nx daemon --stop; lsof -t -i:4000 | xargs kill -9",
+    "basics01": "tsx --watch basics/01.mts",
+    "basics02": "tsx --watch basics/02.mts"
   },
   "dependencies": {
     "@effect/experimental": "~0.17.1",
@@ -125,6 +127,7 @@
     "sort-json": "^2.0.1",
     "ts-jest": "^29.1.5",
     "ts-node": "10.9.1",
+    "tsx": "^4.15.7",
     "typescript": "~5.4.5"
   },
   "packageManager": "pnpm@8.15.7+sha256.50783dd0fa303852de2dd1557cd4b9f07cb5b018154a6e76d0f40635d6cee019"
