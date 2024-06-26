@@ -20,7 +20,7 @@
       }
     ],
     "paths": {
-      "@crfx/github-stars-shared-schema": [
+      "@ghs/github-stars-shared-schema": [
         "libs/github-stars/shared/schema/src/index.ts"
       ]
     }

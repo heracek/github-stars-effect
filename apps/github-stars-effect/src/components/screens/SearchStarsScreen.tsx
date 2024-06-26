@@ -15,7 +15,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Link, router, Stack, useLocalSearchParams } from 'expo-router';
 import { Input, Label, Spinner, Text, View, XStack, YStack } from 'tamagui';
 
-import { GetStarsResponseSchema } from '@crfx/github-stars-shared-schema';
+import { GetStarsResponseSchema } from '@ghs/github-stars-shared-schema';
 
 import { EmptyView } from '../ui/EmptyView';
 import { ErrorView } from '../ui/ErrorView';

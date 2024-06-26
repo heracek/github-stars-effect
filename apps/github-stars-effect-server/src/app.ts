@@ -2,7 +2,7 @@ import { Array, Chunk, Effect, pipe } from 'effect';
 import { Api, HttpError, Middlewares, RouterBuilder } from 'effect-http';
 import * as S from '@effect/schema/Schema';
 
-import { GetStarsResponseSchema } from '@crfx/github-stars-shared-schema';
+import { GetStarsResponseSchema } from '@ghs/github-stars-shared-schema';
 
 import { GithubApiRepository } from './repository/githubApi/GithubApiRepository';
 import { StarsDbRepository } from './repository/starsDb/StarsDbRepository';

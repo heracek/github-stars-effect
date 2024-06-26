@@ -33,7 +33,7 @@
               // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
               ["^react", "^effect", "^(@effect)(/.*|$)", "^@?\\w"],
               // Internal packages.
-              ["^(@crfx/ui)", "^(@crfx)(/.*|$)"],
+              ["^(@ghs/ui)", "^(@ghs)(/.*|$)"],
               // Absolute imports and other imports such as Vue-style `@/foo`.
               // Anything not matched in another group.
               ["^"],
