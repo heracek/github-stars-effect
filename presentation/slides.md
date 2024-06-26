@@ -303,7 +303,7 @@ background: ./theme/bgs/wawy3.png
 
 # 🎒 Basics: Mini Demo 01
 
-https://github.com/heracek/github-stars-effect
+[github.com/heracek/github-stars-effect](https://github.com/heracek/github-stars-effect)
 
 `pnpm basics01`
 
@@ -462,7 +462,7 @@ background: ./theme/bgs/wawy3.png
 
 # 🎒 Basics: Mini Demo 02
 
-https://github.com/heracek/github-stars-effect
+[github.com/heracek/github-stars-effect](https://github.com/heracek/github-stars-effect)
 
 `pnpm basics02`
 
@@ -560,6 +560,10 @@ layout: centered
 ---
 layout: thank-you
 ---
+
+[github.com/heracek/github-stars-effect](https://github.com/heracek/github-stars-effect)
+
+toh@ciklum.com
 
 ---
 layout: centered

@@ -16,7 +16,11 @@ const style = computed(() =>
 </script>
 
 <template>
-  <div class="slidev-layout cover text-left" :style="style"></div>
+  <div class="slidev-layout cover text-left" :style="style">
+    <div class="my-auto text-center center-slide pt-80">
+      <slot></slot>
+    </div>
+  </div>
 </template>
 
 <style></style>
