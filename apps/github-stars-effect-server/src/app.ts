@@ -53,6 +53,7 @@ export const app = RouterBuilder.make(publicApi).pipe(
       const githubRepository = yield* GithubApiRepository;
 
       const STOP_ITERATING = -1;
+      const GITHUB_STARS_FETCH_CONCURRENCY = 5;
 
       const fetchAndUpdateWorker = (initialPage: number) =>
         Effect.iterate(initialPage, {
@@ -77,13 +78,18 @@ export const app = RouterBuilder.make(publicApi).pipe(
                   Effect.all(effects, { batching: true, discard: true }),
               );
 
-              return page + 1;
+              return page + GITHUB_STARS_FETCH_CONCURRENCY;
             }),
         });
 
-      const worker = fetchAndUpdateWorker(0);
+      const workers = pipe(
+        Array.range(0, GITHUB_STARS_FETCH_CONCURRENCY - 1),
+        Array.map((initialPage) => fetchAndUpdateWorker(initialPage)),
+      );
 
-      yield* worker;
+      yield* Effect.all(workers, {
+        concurrency: GITHUB_STARS_FETCH_CONCURRENCY,
+      });
 
       return '✅ Ok';
     }).pipe(

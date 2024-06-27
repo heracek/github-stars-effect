@@ -1,5 +1,9 @@
-import { pipe } from 'effect';
-import * as S from '@effect/schema/Schema';
+import { Effect, pipe } from 'effect';
+import {
+  HttpClient,
+  HttpClientRequest,
+  HttpClientResponse,
+} from '@effect/platform';
 
 import { GetStarsResponseSchema } from '@ghs/github-stars-shared-schema';
 
@@ -12,9 +16,13 @@ export async function fetchStars({
 }) {
   const queryString = queryKey[1];
 
-  const url = new URL('http://localhost:4000/stars');
-  url.searchParams.set('q', queryString);
+  const fetchEffect = pipe(
+    HttpClientRequest.get('http://localhost:4000/stars'),
+    HttpClientRequest.setUrlParams({ q: `${queryString}` }),
+    HttpClient.fetchOk,
+    Effect.flatMap(HttpClientResponse.schemaBodyJson(GetStarsResponseSchema)),
+    Effect.scoped,
+  );
 
-  const jsonResponse = await (await fetch(url, { signal })).json();
-  return pipe(jsonResponse, S.decodeUnknownSync(GetStarsResponseSchema));
+  return await Effect.runPromise(fetchEffect, { signal });
 }
