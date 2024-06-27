@@ -15,6 +15,7 @@ export class StarsDbRepository extends Context.Tag('StarsDbRepository')<
     insertOrUpdateStarredRepo: (
       input: StarsDbRepositoryStarredRepo,
     ) => Effect.Effect<StarsDbRepositoryInsertResult, StarsDbRepositoryError>;
+
     fullTextSearch: (
       fullText: string,
     ) => Effect.Effect<

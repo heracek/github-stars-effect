@@ -5,9 +5,6 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native';
-import { pipe } from 'effect/Function';
-import * as O from 'effect/Option';
-import * as S from '@effect/schema/Schema';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { GitFork, Star } from '@tamagui/lucide-icons';
 import { useQuery } from '@tanstack/react-query';
@@ -15,8 +12,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Link, router, Stack, useLocalSearchParams } from 'expo-router';
 import { Input, Label, Spinner, Text, View, XStack, YStack } from 'tamagui';
 
-import { GetStarsResponseSchema } from '@ghs/github-stars-shared-schema';
-
+import { fetchStars } from '../data/fetchStars';
 import { EmptyView } from '../ui/EmptyView';
 import { ErrorView } from '../ui/ErrorView';
 import { HighlightedText } from '../ui/HighlightedText';
@@ -24,23 +20,6 @@ import { LoadingView } from '../ui/LoadingView';
 import { Tag } from '../ui/Tag';
 
 const MINIMUM_LENGTH = 3;
-
-async function fetchStars({
-  queryKey,
-  signal,
-}: {
-  queryKey: [string, string];
-  signal: AbortSignal;
-}) {
-  const queryString = queryKey[1];
-
-  const url = new URL('http://localhost:4000/stars');
-  url.searchParams.set('q', queryString);
-
-  const jsonResponse = await (await fetch(url, { signal })).json();
-
-  return pipe(jsonResponse, S.decodeUnknownSync(GetStarsResponseSchema));
-}
 
 export function SearchStarsScreen() {
   const localSearchParams = useLocalSearchParams<{ q?: string }>();
