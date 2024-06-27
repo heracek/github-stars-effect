@@ -59,10 +59,9 @@ export const app = RouterBuilder.make(publicApi).pipe(
               const repository = yield* StarsDbRepository;
               const githubRepository = yield* GithubApiRepository;
 
-              const response =
-                yield* githubRepository.getStarredRepositoriesWithPage({
-                  page,
-                });
+              const response = yield* githubRepository.getStarred({
+                page,
+              });
               yield* Effect.log(`page ${page} - length: ${response.length}`);
 
               if (response.length === 0) return -1;

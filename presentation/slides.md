@@ -13,30 +13,31 @@ transition: none # no transition for better online screen sharing - or use "slid
 css: unocss
 mdc: true # enable "Markdown Components" syntax: https://sli.dev/guide/syntax#mdc-syntax
 routerMode: hash # more compatible with static site hosting
+withLogo: false
 ---
 
 ---
 layout: centered
 background: ./02.png
+withLogo: false
 ---
 
 ---
 layout: centered
 background: ./03.png
+withLogo: false
 ---
 
----
-layout: cover
 ---
 
 # Table of Contents
 
 <v-clicks style="zoom: 150%">
 
-1. **What is Effect 🤔**
-2. **Basics 🎒**
-3. **Live Coding 🧑‍💻**
-4. **Closing Thoughts 💡**
+1. What is Effect 🤔
+2. Basics 🎒
+3. Live Coding 🧑‍💻
+4. Closing Thoughts 💡
 
 </v-clicks>
 
@@ -489,7 +490,8 @@ layout: centered
 # 3️⃣ Live Coding 🧑‍💻
 
 ---
-layout: center
+layout: centered
+background: '#f3f3f3'
 ---
 
 # 🧑‍💻 Live Coding: GitHub Stars App
@@ -525,6 +527,165 @@ graph LR
 
 ---
 layout: centered
+background: '#f3f3f3'
+---
+
+# ⚛️ React Context
+
+<div class="grid grid-cols-1">
+
+```mermaid {theme: 'base', scale: 0.8}
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#00ffbe',
+      'primaryTextColor': '#001528',
+      'primaryBorderColor': '#001528',
+      'lineColor': '#001528',
+      'secondaryColor': '#50eaff',
+      'tertiaryColor': '#6450ff',
+      'noteTextColor': '#ffffff',
+      'noteBkgColor': '#6450ff',
+      'fontFamily': 'Public Sans'
+      
+    }
+  }
+}%%
+graph TD
+  app("&lt;App />") --> context("&lt;AuthContext.Provider value={user} />")
+  context --> list("&lt;UserProfilePage />")
+  list --> item1("&lt;NavigationMenu />")
+  list --> item2("&lt;Item />")
+  list --> item3("&lt;Item />")
+  list --> item4("&lt;Item />")
+  item1 --> wrapper("&lt;Wrapper />") --> timer1("&lt;CurrentUserAvatar />")
+  item3 --> timer3("&lt;CurrentUserAvatar />")
+  timer1 -. "useContext(AuthContext)" .-> context
+  timer3 -. "useContext(AuthContext)" .-> context
+  style context fill:navy,color:white
+  style timer1 fill:teal,color:white
+  style timer3 fill:teal,color:white
+```
+
+</div>
+
+---
+layout: centered
+background: '#f3f3f3'
+---
+
+# 🤩 Effect Context
+
+<div class="grid grid-cols-1">
+
+```mermaid {theme: 'base', scale: 0.8}
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#00ffbe',
+      'primaryTextColor': '#001528',
+      'primaryBorderColor': '#001528',
+      'lineColor': '#001528',
+      'secondaryColor': '#50eaff',
+      'tertiaryColor': '#6450ff',
+      'noteTextColor': '#ffffff',
+      'noteBkgColor': '#6450ff',
+      'fontFamily': 'Public Sans'
+      
+    }
+  }
+}%%
+graph TD
+  app("liveApp") --> context("Effect.provide(GithubApiRepositoryLive)")
+  context --> list("effect-http")
+  list --> item1("RouterBuilder")
+  list --> item2("RouterBuilder")
+  list --> item3("RouterBuilder")
+  list --> item4("RouterBuilder")
+  item1 --> wrapper("wrapper") --> timer1("Effect.gen")
+  item3 --> timer3("Effect.gen")
+  timer1 -. "yield* GithubApiRepository" .-> context
+  timer3 -. "yield* GithubApiRepository" .-> context
+  style context fill:navy,color:white
+  style timer1 fill:teal,color:white
+  style timer3 fill:teal,color:white
+```
+
+</div>
+
+---
+
+# 🤩 Effect Context
+
+```ts {1-8|1-13|} twoslash
+import { Context, Effect, pipe } from 'effect';
+// ---cut-start---
+import { Layer } from 'effect';
+interface ResponseStarred {}
+// ---cut-end---
+
+class GithubApiRepository extends Context.Tag("GithubApiRepository")<
+  GithubApiRepository,
+  {
+    getStarred: (options: { page: number }) => Effect.Effect<ResponseStarred>;
+  }
+>() {}
+
+const program = Effect.gen(function* () {
+  const repo = yield* GithubApiRepository;
+  return yield* repo.getStarred({ page: 1 });
+});
+// ---cut-start---
+export const GithubApiRepositoryLive = Layer.effect(
+  GithubApiRepository,
+  Effect.gen(function* makeGithubRepository() {
+    const getStarred = () => Effect.success<ResponseStarred>({})
+    return GithubApiRepository.of({ getStarred });
+  }),
+);
+// ---cut-end---
+
+Effect.runPromise(pipe(
+  program,
+  Effect.provide(GithubApiRepositoryLive),
+))
+```
+
+---
+
+# 🤩 Effect Context
+
+```ts twoslash
+import { Effect, Layer } from 'effect';
+// ---cut-start---
+import { Context } from 'effect'
+interface ResponseStarred {}
+class GithubApiRepository extends Context.Tag("GithubApiRepository")<
+  GithubApiRepository,
+  {
+    getStarred: (options: { page: number }) => Effect.Effect<ResponseStarred>;
+  }
+>() {}
+// ---cut-end---
+
+export const GithubApiRepositoryLive = Layer.effect(
+  GithubApiRepository,
+  Effect.gen(function* () {
+    const getStarred = ({ page }: { page: number }) =>
+        // TODO: HTTP fetch
+        Effect.succeed<ResponseStarred>({})
+
+    return GithubApiRepository.of({
+      getStarred,
+    });
+  }),
+);
+```
+
+---
+layout: centered
 ---
 
 # 4️⃣ Closing Thoughts 💡
@@ -538,7 +699,7 @@ layout: centered
 - I ❤️ Effect
   - ✅ `effect` is production ready and API stable
   - 🏋️‍♂️ looks hard, but ~1-5 days and your are productive (incremental adoption)
-  - ❤️ `Effect.layer`
+  - ❤️ Effect `Layer`
 - `@effect/schema`, `@effect/platform`, ...
   - 🆗 less stable, but production ready
 - Use it?
@@ -568,54 +729,11 @@ toh@ciklum.com
 ---
 layout: centered
 background: ./91.png
+withLogo: false
 ---
 
 ---
 layout: centered
 background: ./92.jpg
----
-
----
-
-# Services
-
-```ts
-export class ServiceRandom extends Context.Tag('ServiceRandom')<
-  ServiceRandom,
-  { readonly next: Effect.Effect<number> }
->() {}
-```
-
----
-
-- I don't know a thing about Effect.
-- Is there alternatives?
-  - nothing
-    - ~= mess?
-  - other FP
-    - fp-ts/io-ts ... dead
-    - [morphic-ts](https://github.com/sledorze/morphic-ts)
-    - Zod, valibot, ...
-    - ramda, lodash, ...
-    - axios
-    - RxJS
-  - other languages
-    - Scala + ZIO
-    - Rust?
-- What are bad sides? What you don't like?
-- Is it usable for back-end development?
-- Branded types
-- Error handling (process errors from API response)
-- Is it suitable for event-based projects?
-  - ???
-- How does it compare to reactive programming libs such as RxJS?
-- 4. Do you use it in commercial projects? How it goes?
-- 5. How did you sell it to team members and managers?
-- 6. Did you see any challenges which slows you (a team) down?
-
----
 withLogo: false
-background: '#f3f3f3'
 ---
-
-<excalidraw-svg src="drawings/example.excalidraw" :fullscreen="true" />

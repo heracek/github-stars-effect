@@ -23,7 +23,7 @@ export const GithubApiRepositoryLive = Layer.effect(
   Effect.gen(function* makeGithubRepository() {
     const { githubToken } = yield* AppConfig;
 
-    const getStarredRepositoriesWithPage = ({ page }: { page: number }) =>
+    const getStarred = ({ page }: { page: number }) =>
       pipe(
         HttpClientRequest.get('https://api.github.com/user/starred'),
         HttpClientRequest.setHeaders({
@@ -51,7 +51,7 @@ export const GithubApiRepositoryLive = Layer.effect(
       );
 
     return GithubApiRepository.of({
-      getStarredRepositoriesWithPage,
+      getStarred,
     });
   }),
 );

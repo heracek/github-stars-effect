@@ -9,7 +9,7 @@ export class GithubApiRepositoryApiError extends Data.TaggedError(
 export class GithubApiRepository extends Context.Tag('GithubApiRepository')<
   GithubApiRepository,
   {
-    getStarredRepositoriesWithPage: (options: {
+    getStarred: (options: {
       page: number;
     }) => Effect.Effect<ResponseStarred, GithubApiRepositoryApiError>;
   }
