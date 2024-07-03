@@ -1,11 +1,13 @@
 # GitHub Stars Effect
 
+### [▶️ 📺 YouTube recording of the presetnation](https://youtu.be/Mikn2MXPaNg)
+
 [![](./presentation/public/01.png)](./presentation/slides-export.pdf)
 
 ## Requirements
 
 - Node.js version based on [./.nvmrc](./.nvmrc)
-- Node.js Corepacka enabled: `corepack enable`
+- Node.js Corepack enabled: `corepack enable`
 - GitHub token in `./.env.local`
   - copy [`./.env`](./.env) to `.env.local` in root folder of the repo
   - go to: https://github.com/settings/tokens/new?description=Github+Stars+Demo+Token&scopes=public_repo,read:user
